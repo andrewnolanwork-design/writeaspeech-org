@@ -1,4 +1,4 @@
-import React from 'react';
+// No React import needed for this component
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {

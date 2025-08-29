@@ -1,4 +1,4 @@
-import React from 'react';
+// No React import needed for this component
 
 const HomePage: React.FC = () => {
   return (
