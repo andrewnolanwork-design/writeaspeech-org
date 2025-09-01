@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PracticeToolkit from '../components/toolkit/PracticeToolkit';
+import ExportModal from '../components/common/ExportModal';
 
 interface Speech {
   id: string;
@@ -28,6 +30,47 @@ const DashboardPage: React.FC = () => {
       wordCount: 450
     }
   ]);
+
+  const [practiceToolkitOpen, setPracticeToolkitOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [selectedSpeech, setSelectedSpeech] = useState<Speech | null>(null);
+
+  const openPracticeToolkit = (speech: Speech) => {
+    setSelectedSpeech(speech);
+    setPracticeToolkitOpen(true);
+  };
+
+  const closePracticeToolkit = () => {
+    setPracticeToolkitOpen(false);
+    setSelectedSpeech(null);
+  };
+
+  const openExportModal = (speech: Speech) => {
+    setSelectedSpeech(speech);
+    setExportModalOpen(true);
+  };
+
+  const closeExportModal = () => {
+    setExportModalOpen(false);
+    setSelectedSpeech(null);
+  };
+
+  // Mock speech content for demonstration
+  const getMockSpeechContent = (speech: Speech) => {
+    return `Good evening, everyone!
+
+Thank you all for being here today. This is truly a special occasion, and I'm honored to speak to you all.
+
+I want to share a few thoughts about ${speech.title.toLowerCase()}. This moment means so much to all of us gathered here.
+
+Let me tell you a story that perfectly captures why we're celebrating today...
+
+[This is a mock speech for demonstration purposes. In a real application, this would be the actual generated speech content.]
+
+As we look to the future, I'm filled with optimism and excitement for what lies ahead.
+
+Thank you for your attention, and let's continue to celebrate this wonderful occasion together!`;
+  };
 
   return (
     <div className="dashboard-page">
@@ -75,10 +118,16 @@ const DashboardPage: React.FC = () => {
                 <button className="btn btn-secondary btn-small">
                   Edit
                 </button>
-                <button className="btn btn-primary btn-small">
+                <button 
+                  className="btn btn-primary btn-small"
+                  onClick={() => openPracticeToolkit(speech)}
+                >
                   Practice
                 </button>
-                <button className="btn btn-outline btn-small">
+                <button 
+                  className="btn btn-outline btn-small"
+                  onClick={() => openExportModal(speech)}
+                >
                   Export
                 </button>
               </div>
@@ -96,6 +145,27 @@ const DashboardPage: React.FC = () => {
             </div>
           )}
         </div>
+
+        {practiceToolkitOpen && selectedSpeech && (
+          <PracticeToolkit
+            speechContent={getMockSpeechContent(selectedSpeech)}
+            speechTitle={selectedSpeech.title}
+            onClose={closePracticeToolkit}
+          />
+        )}
+
+        {exportModalOpen && selectedSpeech && (
+          <ExportModal
+            speechContent={getMockSpeechContent(selectedSpeech)}
+            speechTitle={selectedSpeech.title}
+            speechMeta={{
+              occasion: selectedSpeech.occasion,
+              wordCount: selectedSpeech.wordCount,
+              estimatedDuration: `${Math.ceil(selectedSpeech.wordCount / 150)} minutes`
+            }}
+            onClose={closeExportModal}
+          />
+        )}
       </div>
     </div>
   );
