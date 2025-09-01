@@ -27,13 +27,23 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes will be added here
+// Import routes
+const authRoutes = require('./routes/auth');
+const speechRoutes = require('./routes/speech');
+const paymentRoutes = require('./routes/payment');
+
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/speech', speechRoutes);
+app.use('/api/payment', paymentRoutes);
+
 app.get('/api', (req, res) => {
   res.json({
     message: 'Welcome to writeaspeech.org API',
     version: '1.0.0',
     endpoints: {
       health: '/health',
+      auth: '/api/auth',
       speech: '/api/speech',
       payment: '/api/payment'
     }

@@ -684,6 +684,23 @@ body {
   min-height: 400px;
 }
 
+.error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message p {
+  color: #c33;
+  margin: 0;
+  flex: 1;
+}
+
 .step-content h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -902,6 +919,12 @@ body {
 
 .btn-outline:hover {
   background: #f8f9fa;
+}
+
+.btn-large {
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .empty-state {

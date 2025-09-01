@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { generateSpeech, createPaymentIntent, SpeechData } from '../api';
 
-interface SpeechData {
+interface BuilderSpeechData {
   occasion: string;
   style: string;
   length: string;
@@ -11,7 +12,7 @@ interface SpeechData {
 
 const BuilderPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [speechData, setSpeechData] = useState<SpeechData>({
+  const [speechData, setSpeechData] = useState<BuilderSpeechData>({
     occasion: '',
     style: '',
     length: '',
@@ -19,12 +20,64 @@ const BuilderPage: React.FC = () => {
     key_points: [],
     personal_stories: []
   });
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const totalSteps = 5;
 
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 1: return speechData.occasion !== '';
+      case 2: return speechData.style !== '';
+      case 3: return speechData.length !== '';
+      case 4: return speechData.audience.trim() !== '';
+      case 5: return true; // Optional step
+      default: return false;
+    }
+  };
+
   const handleNext = () => {
-    if (currentStep < totalSteps) {
+    if (currentStep < totalSteps && isStepValid()) {
       setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handleGenerateSpeech = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // For now, we'll simulate the payment process
+      // In a real implementation, this would integrate with Stripe
+      console.log('Starting payment process for speech generation...');
+      
+      // Create payment intent
+      const paymentResponse = await createPaymentIntent(speechData);
+      console.log('Payment intent created:', paymentResponse.paymentIntent.id);
+      
+      // Simulate successful payment for demo purposes
+      // In production, this would go through Stripe's payment flow
+      console.log('Simulating successful payment...');
+      
+      // Generate the speech
+      const speechResponse = await generateSpeech(speechData);
+      console.log('Speech generated successfully:', speechResponse.speech);
+      
+      // Show success message
+      alert(`Speech generated successfully! 
+      
+Title: ${speechResponse.speech.title || 'Your Speech'}
+Word Count: ${speechResponse.speech.wordCount}
+Duration: ${speechResponse.speech.estimatedDuration}
+
+In a real implementation, you would be redirected to view your completed speech.`);
+      
+    } catch (error: any) {
+      console.error('Error generating speech:', error);
+      setError(error.message || 'There was an error generating your speech. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -128,13 +181,23 @@ const BuilderPage: React.FC = () => {
             <div className="key-points-section">
               <textarea
                 className="key-points-input"
-                placeholder="Share any specific points, memories, or messages you want to include..."
+                value={speechData.key_points.join('\n')}
+                onChange={(e) => setSpeechData({ 
+                  ...speechData, 
+                  key_points: e.target.value.split('\n').filter(point => point.trim() !== '') 
+                })}
+                placeholder="Share any specific points, memories, or messages you want to include... (one per line)"
                 rows={6}
               />
               <div className="personal-touches">
                 <h3>Personal Stories (Optional)</h3>
                 <textarea
-                  placeholder="Any personal anecdotes or funny stories you'd like to include?"
+                  value={speechData.personal_stories.join('\n')}
+                  onChange={(e) => setSpeechData({ 
+                    ...speechData, 
+                    personal_stories: e.target.value.split('\n').filter(story => story.trim() !== '') 
+                  })}
+                  placeholder="Any personal anecdotes or funny stories you'd like to include? (one per line)"
                   rows={4}
                 />
               </div>
@@ -163,6 +226,17 @@ const BuilderPage: React.FC = () => {
         </div>
 
         <div className="builder-content">
+          {error && (
+            <div className="error-message">
+              <p>{error}</p>
+              <button 
+                className="btn btn-secondary btn-small"
+                onClick={() => setError(null)}
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           {renderStep()}
         </div>
 
@@ -182,13 +256,17 @@ const BuilderPage: React.FC = () => {
             <button 
               className="btn btn-primary" 
               onClick={handleNext}
-              disabled={!speechData.occasion && currentStep === 1}
+              disabled={!isStepValid()}
             >
               Next
             </button>
           ) : (
-            <button className="btn btn-primary btn-large">
-              Generate My Speech - $39
+            <button 
+              className="btn btn-primary btn-large"
+              onClick={handleGenerateSpeech}
+              disabled={!speechData.audience.trim() || isLoading}
+            >
+              {isLoading ? 'Processing...' : 'Generate My Speech - $39'}
             </button>
           )}
         </div>

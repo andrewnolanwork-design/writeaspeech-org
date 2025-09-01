@@ -31,19 +31,114 @@ writeaspeech-org/
 
 ## 💻 Development
 
-### Frontend (Client)
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Firebase project (optional, will use mocks in development)
+- OpenAI API key (optional, will use mocks in development)
+- Stripe account (optional, will use mocks in development)
+
+### Setup Instructions
+
+1. **Clone and install dependencies:**
 ```bash
+git clone <repository-url>
+cd writeaspeech-org
+
+# Install client dependencies
 cd client
 npm install
-npm run dev
+
+# Install server dependencies
+cd ../server
+npm install
 ```
 
-### Backend (Server)
+2. **Configure environment variables:**
+
+**Server Configuration:**
 ```bash
 cd server
-npm install
-npm run dev
+cp env.template .env
+# Edit .env with your actual API keys (optional for development)
 ```
+
+**Client Configuration:**
+```bash
+cd client
+cp env.template .env
+# Edit .env with your configuration (optional for development)
+```
+
+3. **Start the development servers:**
+
+**Backend (Terminal 1):**
+```bash
+cd server
+npm run dev
+# Server runs on http://localhost:3001
+```
+
+**Frontend (Terminal 2):**
+```bash
+cd client
+npm run dev
+# Client runs on http://localhost:5173
+```
+
+### Features Implemented
+
+✅ **Frontend Components:**
+- Landing page with hero section and feature highlights
+- Multi-step speech builder with validation
+- User authentication pages (login/register)
+- Dashboard with speech management
+- Responsive design with modern UI
+
+✅ **Backend API:**
+- Speech generation using OpenAI GPT (with fallback mocks)
+- User authentication system (with Firebase support)
+- Payment processing with Stripe integration
+- RESTful API endpoints for all features
+- Error handling and validation
+
+✅ **Integration:**
+- Frontend API client with TypeScript
+- Payment flow simulation
+- Speech generation workflow
+- Mock data for development without external APIs
+
+### API Endpoints
+
+**Authentication:**
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/google` - Google OAuth
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout
+
+**Speech Generation:**
+- `POST /api/speech/generate` - Generate new speech
+- `GET /api/speech/user/:userId` - Get user speeches
+- `GET /api/speech/:speechId` - Get specific speech
+- `PUT /api/speech/:speechId` - Update speech
+- `DELETE /api/speech/:speechId` - Delete speech
+
+**Payments:**
+- `POST /api/payment/create-payment-intent` - Create payment
+- `POST /api/payment/confirm-payment` - Confirm payment
+- `GET /api/payment/orders/:userId` - Get order history
+- `GET /api/payment/config` - Get payment config
+- `POST /api/payment/webhook` - Stripe webhook
+
+### Current State
+
+The application is fully functional in development mode with:
+- Complete UI/UX for speech building process
+- Working API endpoints with mock responses
+- Payment flow simulation
+- Speech generation (mock + real AI when configured)
+- Responsive design and error handling
 
 ## 🚀 Deployment
 
