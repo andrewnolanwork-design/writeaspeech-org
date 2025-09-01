@@ -1,5 +1,5 @@
 import { apiGet, apiPost } from './config';
-import { SpeechData } from './speech';
+import type { SpeechData } from './speech';
 
 export interface PaymentIntent {
   id: string;

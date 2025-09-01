@@ -3,9 +3,14 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:30
 
 // HTTP request helper
 export class ApiError extends Error {
-  constructor(public status: number, message: string, public data?: any) {
+  public status: number;
+  public data?: any;
+  
+  constructor(status: number, message: string, data?: any) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
+    this.data = data;
   }
 }
 

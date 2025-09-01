@@ -1,18 +1,12 @@
 import { useState } from 'react';
-import { generateSpeech, createPaymentIntent, SpeechData } from '../api';
+import { generateSpeech, createPaymentIntent } from '../api';
+import type { SpeechData } from '../api';
 
-interface BuilderSpeechData {
-  occasion: string;
-  style: string;
-  length: string;
-  audience: string;
-  key_points: string[];
-  personal_stories: string[];
-}
+// Using SpeechData interface from API
 
 const BuilderPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [speechData, setSpeechData] = useState<BuilderSpeechData>({
+  const [speechData, setSpeechData] = useState<SpeechData>({
     occasion: '',
     style: '',
     length: '',
