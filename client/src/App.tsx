@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
@@ -12,19 +11,26 @@ import LoginPage from './pages/LoginPage';
 import BuilderPage from './pages/BuilderPage';
 import DashboardPage from './pages/DashboardPage';
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+// Auth Context
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    // TODO: Clear user session
+function AppContent() {
+  const { currentUser, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
     <Router>
       <div className="App">
         <Navbar 
-          isAuthenticated={isAuthenticated} 
+          isAuthenticated={!!currentUser} 
           onLogout={handleLogout}
         />
         
@@ -32,15 +38,37 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/builder" element={<BuilderPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route 
+              path="/builder" 
+              element={
+                <ProtectedRoute>
+                  <BuilderPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
 
         <Footer />
       </div>
     </Router>
-  )
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export default App

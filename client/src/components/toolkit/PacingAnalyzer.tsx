@@ -31,7 +31,7 @@ const PacingAnalyzer: React.FC<PacingAnalyzerProps> = ({ speechContent, onClose 
 
   useEffect(() => {
     if (isRecording && !isPaused && startTime) {
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = window.setInterval(() => {
         const now = Date.now();
         const elapsedSeconds = (now - startTime - pausedTime) / 1000;
         const elapsedMinutes = elapsedSeconds / 60;

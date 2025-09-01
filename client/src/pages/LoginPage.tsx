@@ -1,15 +1,57 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { signup, login, loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log(isSignUp ? 'Sign up' : 'Login', { email, password });
+    
+    if (isSignUp && password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      if (isSignUp) {
+        await signup(email, password, firstName, lastName);
+      } else {
+        await login(email, password);
+      }
+      navigate('/dashboard');
+    } catch (error: any) {
+      setError(error.message || 'Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      await loginWithGoogle();
+      navigate('/dashboard');
+    } catch (error: any) {
+      setError(error.message || 'Google authentication failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,7 +68,41 @@ const LoginPage: React.FC = () => {
             }
           </p>
 
+          {error && (
+            <div className="error-message">
+              <p>{error}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="auth-form">
+            {isSignUp && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="firstName">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Enter your first name"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="lastName">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Enter your last name"
+                    required
+                  />
+                </div>
+              </>
+            )}
+
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
@@ -48,6 +124,7 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
+                minLength={6}
               />
             </div>
 
@@ -61,12 +138,17 @@ const LoginPage: React.FC = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your password"
                   required
+                  minLength={6}
                 />
               </div>
             )}
 
-            <button type="submit" className="btn btn-primary btn-full">
-              {isSignUp ? 'Create Account' : 'Sign In'}
+            <button 
+              type="submit" 
+              className="btn btn-primary btn-full"
+              disabled={loading}
+            >
+              {loading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </button>
           </form>
 
@@ -74,7 +156,12 @@ const LoginPage: React.FC = () => {
             <span>or</span>
           </div>
 
-          <button className="btn btn-google btn-full">
+          <button 
+            type="button"
+            onClick={handleGoogleLogin}
+            className="btn btn-google btn-full"
+            disabled={loading}
+          >
             <span>Continue with Google</span>
           </button>
 

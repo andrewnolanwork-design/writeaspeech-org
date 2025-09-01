@@ -154,7 +154,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ speechContent, onClose })
       setRecordingTime(0);
       
       // Start timer
-      timerRef.current = setInterval(() => {
+      timerRef.current = window.setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
       
@@ -171,7 +171,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ speechContent, onClose })
     if (mediaRecorderRef.current) {
       if (isPaused) {
         mediaRecorderRef.current.resume();
-        timerRef.current = setInterval(() => {
+        timerRef.current = window.setInterval(() => {
           setRecordingTime(prev => prev + 1);
         }, 1000);
       } else {

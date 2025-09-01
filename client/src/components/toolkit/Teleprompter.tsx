@@ -22,7 +22,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({ speechContent, onClose }) =
 
   useEffect(() => {
     if (isPlaying && autoScroll) {
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = window.setInterval(() => {
         setCurrentWordIndex(prev => {
           const next = prev + 1;
           if (next >= words.length) {
