@@ -5,13 +5,18 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: npm start
+    rootDir: server
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: FRONTEND_URL
-        sync: false
+        value: https://writeaspeech-org.vercel.app
+      - key: CORS_ORIGIN
+        value: https://writeaspeech-org.vercel.app
+      - key: JWT_SECRET
+        generateValue: true
       - key: OPENAI_API_KEY
         sync: false
       - key: STRIPE_SECRET_KEY
@@ -23,6 +28,4 @@ services:
       - key: FIREBASE_SERVICE_ACCOUNT_KEY
         sync: false
       - key: FIREBASE_DATABASE_URL
-        sync: false
-      - key: JWT_SECRET
         sync: false
