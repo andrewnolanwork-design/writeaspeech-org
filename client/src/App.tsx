@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import BuilderPage from './pages/BuilderPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 
 // Auth Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -21,6 +22,8 @@ function AppContent() {
   const handleLogout = async () => {
     try {
       await logout();
+      // Redirect to home page after logout
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -51,6 +54,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } 
             />
