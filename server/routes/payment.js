@@ -31,7 +31,7 @@ router.post('/create-payment-intent', async (req, res) => {
 
     // Create Stripe payment intent
     const paymentIntent = await createPaymentIntent({
-      amount: 3900, // $39.00 in cents
+      amount: 1900, // $19.00 in cents
       currency: 'usd',
       userId,
       speechData,
@@ -102,7 +102,7 @@ router.post('/confirm-payment', async (req, res) => {
       id: 'order_' + Date.now(),
       userId: userId || 'guest',
       paymentIntentId,
-      amount: 3900,
+      amount: 1900,
       currency: 'usd',
       status: 'completed',
       speechData,
@@ -151,7 +151,7 @@ router.get('/orders/:userId', async (req, res) => {
     const mockOrders = [
       {
         id: 'order_1',
-        amount: 3900,
+        amount: 1900,
         currency: 'usd',
         status: 'completed',
         speechTitle: 'Best Man Speech for Jake\'s Wedding',
@@ -159,7 +159,7 @@ router.get('/orders/:userId', async (req, res) => {
       },
       {
         id: 'order_2',
-        amount: 3900,
+        amount: 1900,
         currency: 'usd', 
         status: 'completed',
         speechTitle: 'Retirement Speech for Dad',
@@ -230,7 +230,7 @@ router.get('/config', (req, res) => {
   res.json({
     publishableKey: getPublishableKey(),
     currency: 'usd',
-    amount: 3900, // $39.00
+    amount: 1900, // $19.00
     productName: 'AI-Generated Speech',
     description: 'Personalized speech with practice tools'
   });

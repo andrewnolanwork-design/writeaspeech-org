@@ -216,12 +216,11 @@ const ProfilePage: React.FC = () => {
                 <div className="stat-label">Speeches Created</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">{profile.subscription}</div>
-                <div className="stat-label">Subscription Plan</div>
-              </div>
-              <div className="stat-card">
                 <div className="stat-number">
-                  {profile.createdAt.toLocaleDateString()}
+                  {profile.createdAt.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    year: 'numeric' 
+                  })}
                 </div>
                 <div className="stat-label">Member Since</div>
               </div>

@@ -121,7 +121,7 @@ You will be redirected to view your speech.`);
             <h3>Order Summary</h3>
             <div className="summary-item">
               <span>AI-Generated Speech</span>
-              <span>$39.00</span>
+              <span>$19.00</span>
             </div>
             <div className="summary-item">
               <span>Occasion: {speechData.occasion}</span>
@@ -130,7 +130,7 @@ You will be redirected to view your speech.`);
               <span>Style: {speechData.style}</span>
             </div>
             <div className="summary-total">
-              <span>Total: $39.00</span>
+              <span>Total: $19.00</span>
             </div>
           </div>
 
@@ -194,7 +194,7 @@ You will be redirected to view your speech.`);
                 className="btn btn-primary btn-large"
                 disabled={processing || !paymentIntent}
               >
-                {processing ? 'Processing...' : `Pay $39.00`}
+                {processing ? 'Processing...' : `Pay $19.00`}
               </button>
             </form>
           )}

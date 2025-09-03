@@ -387,7 +387,7 @@ In a real implementation, you would be redirected to view your completed speech.
               onClick={handleGenerateSpeech}
               disabled={isLoading}
             >
-              {isLoading ? 'Processing...' : 'Generate My Speech - $39'}
+              {isLoading ? 'Processing...' : 'Generate My Speech - $19'}
             </button>
           )}
         </div>

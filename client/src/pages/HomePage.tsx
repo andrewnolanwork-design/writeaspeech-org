@@ -1,4 +1,4 @@
-// No React import needed for this component
+import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   return (
@@ -10,18 +10,28 @@ const HomePage: React.FC = () => {
             Craft the perfect speech for <span className="highlight">any occasion</span>
           </h1>
           <p className="hero-subtitle">
-            Your personal AI speechwriter for weddings, events, and presentations
+            Your personal AI speechwriter creates personalized speeches for just $19
           </p>
           <div className="hero-buttons">
-            <button className="btn btn-primary">Create My Speech for Free</button>
-            <button className="btn btn-secondary">See How It Works</button>
+            <Link to="/builder" className="btn btn-primary">Create My Speech - $19</Link>
+            <a href="#about" className="btn btn-secondary">See How It Works</a>
           </div>
         </div>
         <div className="hero-visual">
-          <div className="hero-graphic">
-            <div className="floating-card card-1">🎤</div>
-            <div className="floating-card card-2">✍️</div>
-            <div className="floating-card card-3">💫</div>
+          <div className="hero-image">
+            <img 
+              src="/api/placeholder/500/400" 
+              alt="Person giving a confident speech at a podium"
+              className="hero-img"
+            />
+            <div className="speech-elements">
+              <div className="speech-bubble">
+                "Today, I want to share..."
+              </div>
+              <div className="confidence-indicator">
+                ✨ Confident & Prepared
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -78,6 +88,53 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section id="testimonials" className="section">
+        <div className="container">
+          <h2 className="section-title">What Our Users Say</h2>
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <div className="testimonial-image">
+                <img src="/api/placeholder/300/200" alt="Wedding couple with best man" className="testimonial-img" />
+              </div>
+              <div className="testimonial-content">
+                <p>"The AI helped me write the perfect best man speech. It captured exactly what I wanted to say about my friend, and everyone loved it!"</p>
+                <div className="testimonial-author">
+                  <strong>Michael R.</strong>
+                  <span>Best Man Speech</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="testimonial-card">
+              <div className="testimonial-image">
+                <img src="/api/placeholder/300/200" alt="Retirement party celebration" className="testimonial-img" />
+              </div>
+              <div className="testimonial-content">
+                <p>"I was dreading giving a speech at my dad's retirement party. This made it so easy - the speech was heartfelt and brought tears to everyone's eyes."</p>
+                <div className="testimonial-author">
+                  <strong>Sarah L.</strong>
+                  <span>Retirement Speech</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="testimonial-card">
+              <div className="testimonial-image">
+                <img src="/api/placeholder/300/200" alt="Business presentation" className="testimonial-img" />
+              </div>
+              <div className="testimonial-content">
+                <p>"As someone who hates public speaking, this gave me the confidence I needed. The speech was professional yet personal - exactly what I needed."</p>
+                <div className="testimonial-author">
+                  <strong>David Chen</strong>
+                  <span>Work Presentation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="section">
         <div className="container">
@@ -85,7 +142,7 @@ const HomePage: React.FC = () => {
           <div className="contact-content">
             <div className="contact-info">
               <h3>Simple, One-Time Payment</h3>
-              <p>Get your personalized speech and all practice tools for just <strong>$39</strong>. No subscriptions, no hidden fees.</p>
+              <p>Get your personalized speech and all practice tools for just <strong>$19</strong>. No subscriptions, no hidden fees.</p>
               <div className="contact-details">
                 <p>✅ Complete personalized speech</p>
                 <p>✅ Teleprompter and practice tools</p>
@@ -93,7 +150,7 @@ const HomePage: React.FC = () => {
                 <p>✅ Pacing analysis and audio recording</p>
               </div>
               <div className="hero-buttons" style={{ marginTop: '2rem' }}>
-                <button className="btn btn-primary">Start Writing My Speech</button>
+                <Link to="/builder" className="btn btn-primary">Start Writing My Speech</Link>
               </div>
             </div>
           </div>

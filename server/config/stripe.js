@@ -29,7 +29,7 @@ if (process.env.STRIPE_SECRET_KEY) {
         return {
           id: paymentIntentId,
           status: 'succeeded',
-          amount: 3900,
+          amount: 1900,
           currency: 'usd',
           created: Math.floor(Date.now() / 1000)
         };
@@ -40,7 +40,7 @@ if (process.env.STRIPE_SECRET_KEY) {
         return {
           id: paymentIntentId,
           status: 'succeeded',
-          amount: 3900,
+          amount: 1900,
           currency: 'usd',
           created: Math.floor(Date.now() / 1000)
         };
