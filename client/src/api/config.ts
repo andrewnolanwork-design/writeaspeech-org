@@ -28,9 +28,22 @@ export async function apiRequest<T>(
     ...options,
   };
 
+  // Ensure Content-Type is always set for POST requests
+  if (options.method === 'POST' && options.body) {
+    config.headers = {
+      'Content-Type': 'application/json',
+      ...config.headers,
+    };
+  }
+
   // Debug logging for payment requests
   if (endpoint.includes('payment')) {
-    console.log('🌐 API Request:', { url, method: config.method, body: config.body });
+    console.log('🌐 API Request:', { 
+      url, 
+      method: config.method, 
+      headers: config.headers,
+      body: config.body 
+    });
   }
 
   try {
@@ -76,7 +89,10 @@ export function apiPost<T>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
     body: data ? JSON.stringify(data) : undefined,
   });
 }
