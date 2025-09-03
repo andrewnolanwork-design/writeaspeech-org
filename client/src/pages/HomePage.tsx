@@ -19,11 +19,10 @@ const HomePage: React.FC = () => {
         </div>
         <div className="hero-visual">
           <div className="hero-image">
-            <img 
-              src="/api/placeholder/500/400" 
-              alt="Person giving a confident speech at a podium"
-              className="hero-img"
-            />
+            <div className="hero-placeholder">
+              <div className="speech-icon">🎤</div>
+              <div className="hero-text">Professional Speech Writing</div>
+            </div>
             <div className="speech-elements">
               <div className="speech-bubble">
                 "Today, I want to share..."
@@ -95,7 +94,10 @@ const HomePage: React.FC = () => {
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <img src="/api/placeholder/300/200" alt="Wedding couple with best man" className="testimonial-img" />
+                <div className="testimonial-placeholder wedding">
+                  <div className="testimonial-icon">💒</div>
+                  <div className="testimonial-category">Wedding Speech</div>
+                </div>
               </div>
               <div className="testimonial-content">
                 <p>"The AI helped me write the perfect best man speech. It captured exactly what I wanted to say about my friend, and everyone loved it!"</p>
@@ -108,7 +110,10 @@ const HomePage: React.FC = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <img src="/api/placeholder/300/200" alt="Retirement party celebration" className="testimonial-img" />
+                <div className="testimonial-placeholder retirement">
+                  <div className="testimonial-icon">🎉</div>
+                  <div className="testimonial-category">Retirement Speech</div>
+                </div>
               </div>
               <div className="testimonial-content">
                 <p>"I was dreading giving a speech at my dad's retirement party. This made it so easy - the speech was heartfelt and brought tears to everyone's eyes."</p>
@@ -121,7 +126,10 @@ const HomePage: React.FC = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <img src="/api/placeholder/300/200" alt="Business presentation" className="testimonial-img" />
+                <div className="testimonial-placeholder business">
+                  <div className="testimonial-icon">💼</div>
+                  <div className="testimonial-category">Business Presentation</div>
+                </div>
               </div>
               <div className="testimonial-content">
                 <p>"As someone who hates public speaking, this gave me the confidence I needed. The speech was professional yet personal - exactly what I needed."</p>
