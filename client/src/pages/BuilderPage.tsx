@@ -65,6 +65,7 @@ const BuilderPage: React.FC = () => {
       // Generate the actual speech
       const speechResponse = await generateSpeech(speechData);
       console.log('Speech generated successfully:', speechResponse.speech);
+      console.log('Speech ID from payment:', speechId); // Use the speechId parameter
       
       // Show success message
       alert(`Payment successful! Speech generated successfully! 
@@ -72,6 +73,7 @@ const BuilderPage: React.FC = () => {
 Title: ${speechResponse.speech.title || 'Your Speech'}
 Word Count: ${speechResponse.speech.wordCount}
 Duration: ${speechResponse.speech.estimatedDuration}
+Speech ID: ${speechId}
 
 In a real implementation, you would be redirected to view your completed speech.`);
       
