@@ -42,9 +42,15 @@ const BuilderPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       
-      // For now, we'll simulate the payment process
-      // In a real implementation, this would integrate with Stripe
+      // Validate all required fields are filled
+      if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience.trim()) {
+        setError('Please complete all required fields before generating your speech.');
+        setIsLoading(false);
+        return;
+      }
+      
       console.log('Starting payment process for speech generation...');
+      console.log('Speech data:', speechData);
       
       // Create payment intent
       const paymentResponse = await createPaymentIntent(speechData);
@@ -69,7 +75,14 @@ In a real implementation, you would be redirected to view your completed speech.
       
     } catch (error: any) {
       console.error('Error generating speech:', error);
-      setError(error.message || 'There was an error generating your speech. Please try again.');
+      console.error('Speech data being sent:', speechData);
+      
+      // More detailed error message
+      if (error.message?.includes('Speech data is required')) {
+        setError('There was an issue with the speech data. Please check that all fields are filled and try again.');
+      } else {
+        setError(error.message || 'There was an error generating your speech. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
