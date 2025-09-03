@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { generateSpeech, createPaymentIntent } from '../api';
+import { generateSpeech } from '../api';
 import { useAuth } from '../contexts/AuthContext';
+import PaymentModal from '../components/payment/PaymentModal';
 import type { SpeechData } from '../api';
 
 // Using SpeechData interface from API
@@ -19,6 +20,7 @@ const BuilderPage: React.FC = () => {
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const totalSteps = 5;
 
@@ -40,34 +42,28 @@ const BuilderPage: React.FC = () => {
   };
 
   const handleGenerateSpeech = async () => {
+    // Validate all required fields are filled
+    if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience.trim()) {
+      setError('Please complete all required fields before generating your speech.');
+      return;
+    }
+    
+    setError(null);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = async (speechId: string) => {
+    setShowPaymentModal(false);
+    
     try {
       setIsLoading(true);
-      setError(null);
       
-      // Validate all required fields are filled
-      if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience.trim()) {
-        setError('Please complete all required fields before generating your speech.');
-        setIsLoading(false);
-        return;
-      }
-      
-      console.log('Starting payment process for speech generation...');
-      console.log('Speech data:', speechData);
-      
-      // Create payment intent
-      const paymentResponse = await createPaymentIntent(speechData, currentUser?.uid);
-      console.log('Payment intent created:', paymentResponse.paymentIntent.id);
-      
-      // Simulate successful payment for demo purposes
-      // In production, this would go through Stripe's payment flow
-      console.log('Simulating successful payment...');
-      
-      // Generate the speech
+      // Generate the actual speech
       const speechResponse = await generateSpeech(speechData);
       console.log('Speech generated successfully:', speechResponse.speech);
       
       // Show success message
-      alert(`Speech generated successfully! 
+      alert(`Payment successful! Speech generated successfully! 
       
 Title: ${speechResponse.speech.title || 'Your Speech'}
 Word Count: ${speechResponse.speech.wordCount}
@@ -77,14 +73,7 @@ In a real implementation, you would be redirected to view your completed speech.
       
     } catch (error: any) {
       console.error('Error generating speech:', error);
-      console.error('Speech data being sent:', speechData);
-      
-      // More detailed error message
-      if (error.message?.includes('Speech data is required')) {
-        setError('There was an issue with the speech data. Please check that all fields are filled and try again.');
-      } else {
-        setError(error.message || 'There was an error generating your speech. Please try again.');
-      }
+      setError(error.message || 'There was an error generating your speech. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -279,6 +268,14 @@ In a real implementation, you would be redirected to view your completed speech.
             </button>
           )}
         </div>
+
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          speechData={speechData}
+          userId={currentUser?.uid}
+          onSuccess={handlePaymentSuccess}
+        />
       </div>
     </div>
   );
