@@ -18,27 +18,74 @@ const BuilderPage: React.FC = () => {
     personal_stories: []
   });
   
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
+  const [customAudience, setCustomAudience] = useState('');
+  const [customOccasion, setCustomOccasion] = useState('');
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  const totalSteps = 5;
+  const totalSteps = 7; // Increased from 5 to 7 steps
 
   const isStepValid = () => {
     switch (currentStep) {
-      case 1: return speechData.occasion !== '';
+      case 1: return speechData.occasion !== '' || customOccasion.trim() !== '';
       case 2: return speechData.style !== '';
       case 3: return speechData.length !== '';
-      case 4: return speechData.audience.trim() !== '';
-      case 5: return true; // Optional step
+      case 4: return selectedAudiences.length > 0 || customAudience.trim() !== '';
+      case 5: return speechData.key_points.length > 0;
+      case 6: return true; // Personal stories optional
+      case 7: return true; // Review step
       default: return false;
     }
   };
 
   const handleNext = () => {
     if (currentStep < totalSteps && isStepValid()) {
+      // Update speechData based on current step before moving to next
+      if (currentStep === 1) {
+        setSpeechData({ ...speechData, occasion: speechData.occasion || customOccasion });
+      } else if (currentStep === 4) {
+        const audienceText = [...selectedAudiences, customAudience].filter(Boolean).join(', ');
+        setSpeechData({ ...speechData, audience: audienceText });
+      }
       setCurrentStep(currentStep + 1);
     }
+  };
+
+  const handleAudienceToggle = (audience: string) => {
+    setSelectedAudiences(prev => 
+      prev.includes(audience) 
+        ? prev.filter(a => a !== audience)
+        : [...prev, audience]
+    );
+  };
+
+  const getGuidanceText = () => {
+    const occasion = speechData.occasion || customOccasion;
+    const style = speechData.style;
+    
+    if (currentStep === 5) { // Key points
+      if (occasion.toLowerCase().includes('wedding')) {
+        return style === 'Heartfelt' 
+          ? "Share meaningful moments, how you know the couple, what makes their relationship special, and your hopes for their future together."
+          : "Include funny stories about the couple, embarrassing moments (keep it light!), and witty observations about their relationship.";
+      } else if (occasion.toLowerCase().includes('retirement')) {
+        return "Highlight career achievements, memorable moments working together, their impact on colleagues, and what they'll be missed for.";
+      } else if (occasion.toLowerCase().includes('birthday')) {
+        return "Share favorite memories, what makes them special, achievements you're proud of, and hopes for the year ahead.";
+      }
+      return "What are the main messages you want to convey? Think about why this person/occasion is important and what you want people to remember.";
+    } else if (currentStep === 6) { // Personal stories
+      if (occasion.toLowerCase().includes('wedding')) {
+        return "Share a story about how you met the couple, a funny moment from your friendship, or something that shows their character.";
+      } else if (occasion.toLowerCase().includes('retirement')) {
+        return "Tell a story that captures their work personality, a project you worked on together, or a moment that defines them professionally.";
+      }
+      return "Think of a specific moment or anecdote that illustrates your relationship with them or shows their character.";
+    }
+    return "";
   };
 
   const handleGenerateSpeech = async () => {
@@ -99,7 +146,7 @@ In a real implementation, you would be redirected to view your completed speech.
             <h2>What's the occasion?</h2>
             <p>Tell us about the event you're speaking at</p>
             <div className="occasion-grid">
-              {['Wedding', 'Birthday', 'Retirement', 'Business Event', 'Graduation', 'Other'].map((occasion) => (
+              {['Wedding', 'Birthday', 'Retirement', 'Business Event', 'Graduation', 'Funeral', 'Anniversary', 'Promotion'].map((occasion) => (
                 <button
                   key={occasion}
                   className={`occasion-card ${speechData.occasion === occasion ? 'selected' : ''}`}
@@ -108,6 +155,16 @@ In a real implementation, you would be redirected to view your completed speech.
                   {occasion}
                 </button>
               ))}
+            </div>
+            <div className="custom-input-section">
+              <label>Other occasion:</label>
+              <input
+                type="text"
+                value={customOccasion}
+                onChange={(e) => setCustomOccasion(e.target.value)}
+                placeholder="Enter custom occasion..."
+                className="custom-input"
+              />
             </div>
           </div>
         );
@@ -165,15 +222,29 @@ In a real implementation, you would be redirected to view your completed speech.
       case 4:
         return (
           <div className="step-content">
-            <h2>Tell us about your audience</h2>
-            <p>Help us tailor the content to your listeners</p>
-            <textarea
-              className="audience-input"
-              value={speechData.audience}
-              onChange={(e) => setSpeechData({ ...speechData, audience: e.target.value })}
-              placeholder="Who will be listening? (e.g., family and friends at a wedding, colleagues at a work event, etc.)"
-              rows={4}
-            />
+            <h2>Who will be your audience?</h2>
+            <p>Select all that apply - this helps us tailor the tone and content</p>
+            <div className="audience-grid">
+              {['Family', 'Friends', 'Work Colleagues', 'Business Partners', 'Customers/Clients', 'Community Members', 'Students', 'Industry Professionals'].map((audience) => (
+                <button
+                  key={audience}
+                  className={`audience-card ${selectedAudiences.includes(audience) ? 'selected' : ''}`}
+                  onClick={() => handleAudienceToggle(audience)}
+                >
+                  {audience}
+                </button>
+              ))}
+            </div>
+            <div className="custom-input-section">
+              <label>Additional audience details:</label>
+              <input
+                type="text"
+                value={customAudience}
+                onChange={(e) => setCustomAudience(e.target.value)}
+                placeholder="Any other audience details..."
+                className="custom-input"
+              />
+            </div>
           </div>
         );
       
@@ -181,7 +252,9 @@ In a real implementation, you would be redirected to view your completed speech.
         return (
           <div className="step-content">
             <h2>What key points do you want to include?</h2>
-            <p>Share the main messages or stories you'd like in your speech</p>
+            <div className="guidance-text">
+              <p>{getGuidanceText()}</p>
+            </div>
             <div className="key-points-section">
               <textarea
                 className="key-points-input"
@@ -190,20 +263,64 @@ In a real implementation, you would be redirected to view your completed speech.
                   ...speechData, 
                   key_points: e.target.value.split('\n').filter(point => point.trim() !== '') 
                 })}
-                placeholder="Share any specific points, memories, or messages you want to include... (one per line)"
+                placeholder="Enter your key points... (one per line)"
+                rows={8}
+              />
+              <div className="help-text">
+                <small>💡 Tip: Add each main point on a separate line. We'll help you develop these into compelling content.</small>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 6:
+        return (
+          <div className="step-content">
+            <h2>Personal Stories (Optional)</h2>
+            <div className="guidance-text">
+              <p>{getGuidanceText()}</p>
+            </div>
+            <div className="personal-stories-section">
+              <textarea
+                className="personal-stories-input"
+                value={speechData.personal_stories.join('\n')}
+                onChange={(e) => setSpeechData({ 
+                  ...speechData, 
+                  personal_stories: e.target.value.split('\n').filter(story => story.trim() !== '') 
+                })}
+                placeholder="Share personal anecdotes or stories... (one per line)"
                 rows={6}
               />
-              <div className="personal-touches">
-                <h3>Personal Stories (Optional)</h3>
-                <textarea
-                  value={speechData.personal_stories.join('\n')}
-                  onChange={(e) => setSpeechData({ 
-                    ...speechData, 
-                    personal_stories: e.target.value.split('\n').filter(story => story.trim() !== '') 
-                  })}
-                  placeholder="Any personal anecdotes or funny stories you'd like to include? (one per line)"
-                  rows={4}
-                />
+              <div className="help-text">
+                <small>💡 Personal stories make speeches memorable. Even one good story can make a big impact!</small>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 7:
+        return (
+          <div className="step-content">
+            <h2>Review Your Speech Details</h2>
+            <p>Everything looks good? Let's create your personalized speech!</p>
+            <div className="review-summary">
+              <div className="summary-item">
+                <strong>Occasion:</strong> {speechData.occasion || customOccasion}
+              </div>
+              <div className="summary-item">
+                <strong>Style:</strong> {speechData.style}
+              </div>
+              <div className="summary-item">
+                <strong>Length:</strong> {speechData.length}
+              </div>
+              <div className="summary-item">
+                <strong>Audience:</strong> {[...selectedAudiences, customAudience].filter(Boolean).join(', ')}
+              </div>
+              <div className="summary-item">
+                <strong>Key Points:</strong> {speechData.key_points.length} points added
+              </div>
+              <div className="summary-item">
+                <strong>Personal Stories:</strong> {speechData.personal_stories.length} stories added
               </div>
             </div>
           </div>
@@ -268,7 +385,7 @@ In a real implementation, you would be redirected to view your completed speech.
             <button 
               className="btn btn-primary btn-large"
               onClick={handleGenerateSpeech}
-              disabled={!speechData.audience.trim() || isLoading}
+              disabled={isLoading}
             >
               {isLoading ? 'Processing...' : 'Generate My Speech - $39'}
             </button>

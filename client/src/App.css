@@ -2319,3 +2319,158 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Enhanced Speech Builder Styles */
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.audience-card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.audience-card:hover {
+  border-color: #2563eb;
+  background: #f0f9ff;
+}
+
+.audience-card.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: white;
+}
+
+.custom-input-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.custom-input-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.custom-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.guidance-text {
+  background: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.guidance-text p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.help-text {
+  margin-top: 0.5rem;
+}
+
+.help-text small {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.review-summary {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1.5rem 0;
+}
+
+.summary-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item strong {
+  color: #374151;
+  min-width: 120px;
+}
+
+.key-points-section,
+.personal-stories-section {
+  margin: 1rem 0;
+}
+
+.key-points-input,
+.personal-stories-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.key-points-input:focus,
+.personal-stories-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Mobile improvements for speech builder */
+@media (max-width: 768px) {
+  .audience-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .audience-card {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .occasion-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+  
+  .summary-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .summary-item strong {
+    min-width: auto;
+  }
+}
