@@ -8,10 +8,21 @@ const { createPaymentIntent, verifyPaymentIntent, constructWebhookEvent, getPubl
  */
 router.post('/create-payment-intent', async (req, res) => {
   try {
+    console.log('🔍 Payment intent request received:');
+    console.log('   Headers:', req.headers);
+    console.log('   Body:', JSON.stringify(req.body, null, 2));
+    console.log('   Body type:', typeof req.body);
+    console.log('   Body keys:', Object.keys(req.body || {}));
+    
     const { userId, speechData } = req.body;
+    
+    console.log('   Extracted userId:', userId);
+    console.log('   Extracted speechData:', speechData);
+    console.log('   SpeechData type:', typeof speechData);
 
     // Validate input
     if (!speechData) {
+      console.log('❌ Validation failed: speechData is missing');
       return res.status(400).json({
         error: 'Missing speech data',
         message: 'Speech data is required to create payment'
