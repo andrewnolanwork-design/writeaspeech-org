@@ -28,6 +28,11 @@ export async function apiRequest<T>(
     ...options,
   };
 
+  // Debug logging for payment requests
+  if (endpoint.includes('payment')) {
+    console.log('🌐 API Request:', { url, method: config.method, body: config.body });
+  }
+
   try {
     const response = await fetch(url, config);
     

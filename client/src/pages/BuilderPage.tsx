@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { generateSpeech, createPaymentIntent } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 import type { SpeechData } from '../api';
 
 // Using SpeechData interface from API
 
 const BuilderPage: React.FC = () => {
+  const { currentUser } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [speechData, setSpeechData] = useState<SpeechData>({
     occasion: '',
@@ -53,7 +55,7 @@ const BuilderPage: React.FC = () => {
       console.log('Speech data:', speechData);
       
       // Create payment intent
-      const paymentResponse = await createPaymentIntent(speechData);
+      const paymentResponse = await createPaymentIntent(speechData, currentUser?.uid);
       console.log('Payment intent created:', paymentResponse.paymentIntent.id);
       
       // Simulate successful payment for demo purposes

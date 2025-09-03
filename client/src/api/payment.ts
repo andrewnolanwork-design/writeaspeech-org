@@ -64,10 +64,25 @@ export async function createPaymentIntent(
   speechData: SpeechData,
   userId?: string
 ): Promise<PaymentIntentResponse> {
-  return apiPost<PaymentIntentResponse>('/payment/create-payment-intent', {
+  console.log('🔍 createPaymentIntent called with:', { speechData, userId });
+  
+  // Validate speechData before sending
+  if (!speechData || typeof speechData !== 'object') {
+    throw new Error('Invalid speech data provided');
+  }
+  
+  if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience) {
+    throw new Error('Missing required speech data fields');
+  }
+  
+  const payload = {
     speechData,
     userId,
-  });
+  };
+  
+  console.log('📤 Sending payload to backend:', JSON.stringify(payload, null, 2));
+  
+  return apiPost<PaymentIntentResponse>('/payment/create-payment-intent', payload);
 }
 
 // Confirm payment after successful Stripe processing
