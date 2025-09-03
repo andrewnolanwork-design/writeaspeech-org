@@ -42,14 +42,18 @@ const BuilderPage: React.FC = () => {
   };
 
   const handleGenerateSpeech = async () => {
+    console.log('🎯 handleGenerateSpeech called');
+    
     // Validate all required fields are filled
     if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience.trim()) {
       setError('Please complete all required fields before generating your speech.');
       return;
     }
     
+    console.log('✅ Validation passed, showing payment modal');
     setError(null);
     setShowPaymentModal(true);
+    console.log('💳 showPaymentModal set to:', true);
   };
 
   const handlePaymentSuccess = async (speechId: string) => {

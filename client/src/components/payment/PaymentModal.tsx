@@ -104,6 +104,8 @@ You will be redirected to view your speech.`);
     return v;
   };
 
+  console.log('💳 PaymentModal render - isOpen:', isOpen);
+  
   if (!isOpen) return null;
 
   return (
