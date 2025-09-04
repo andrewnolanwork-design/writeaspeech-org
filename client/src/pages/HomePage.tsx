@@ -150,7 +150,7 @@ const HomePage: React.FC = () => {
           <div className="contact-content">
             <div className="contact-info">
               <h3>Simple, One-Time Payment</h3>
-              <p>Get your personalized speech and all practice tools for just <strong>$19</strong>. No subscriptions, no hidden fees.</p>
+              <p>Get your personalized speech and all practice tools for just <strong>$39</strong>. No subscriptions, no hidden fees.</p>
               <div className="contact-details">
                 <p>✅ Complete personalized speech</p>
                 <p>✅ Teleprompter and practice tools</p>

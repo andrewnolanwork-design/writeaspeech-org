@@ -11,6 +11,12 @@ import LoginPage from './pages/LoginPage';
 import BuilderPage from './pages/BuilderPage';
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
+import PricingPage from './pages/PricingPage';
+import AboutPage from './pages/AboutPage';
+import HelpPage from './pages/HelpPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import RefundPolicyPage from './pages/RefundPolicyPage';
 
 // Auth Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -65,6 +71,12 @@ function AppContent() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/refund" element={<RefundPolicyPage />} />
           </Routes>
         </main>
 
