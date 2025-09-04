@@ -1,77 +1,160 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const PricingPage: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   return (
-    <div className="page-container">
-      <div className="container">
-        {/* Header Section */}
-        <section className="pricing-header">
-          <h1 className="page-title">Simple, Transparent Pricing</h1>
-          <p className="page-subtitle">
-            One-time payment for complete access to all features. No subscriptions, no hidden fees.
-          </p>
-        </section>
+    <>
+      {/* SEO Meta Tags */}
+      <head>
+        <title>Pricing - writeaspeech.org | AI Speech Writing for $19</title>
+        <meta name="description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features. No subscriptions, no hidden fees. 30-day money-back guarantee." />
+        <meta name="keywords" content="speech writing, AI speechwriter, wedding speech, presentation writing, public speaking, speech generator, affordable speech writing" />
+        <meta property="og:title" content="Pricing - writeaspeech.org | AI Speech Writing for $19" />
+        <meta property="og:description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Pricing - writeaspeech.org | AI Speech Writing for $19" />
+        <meta name="twitter:description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features." />
+        <link rel="canonical" href="https://writeaspeech.org/pricing" />
+      </head>
 
-        {/* Main Pricing Card */}
-        <section className="pricing-main">
-          <div className="pricing-card featured">
-            <div className="pricing-badge">Most Popular</div>
-            <div className="pricing-header">
-              <h2>Complete Speech Package</h2>
-              <div className="pricing-price">
-                <span className="price">$19</span>
-                <span className="period">one-time</span>
-              </div>
-              <p className="pricing-description">
-                Everything you need to create, practice, and deliver the perfect speech
+      <div className="pricing-page">
+        <div className="pricing-container">
+          {/* Hero Section */}
+          <section className={`pricing-hero ${isVisible ? 'animate-in' : ''}`}>
+            <div className="pricing-hero-content">
+              <span className="pricing-badge">💰 Simple Pricing</span>
+              <h1 className="pricing-hero-title">
+                One Price. <span className="highlight-text">Everything Included.</span>
+              </h1>
+              <p className="pricing-hero-subtitle">
+                No subscriptions, no tiers, no hidden fees. Just one simple payment for lifetime access to all features.
               </p>
-            </div>
-            
-            <div className="pricing-features">
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>AI-powered personalized speech generation</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Multiple speech styles (witty, formal, heartfelt, inspiring)</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Interactive teleprompter for practice</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Pacing analysis and timing tools</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Audio recording and playback</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Multiple export formats (PDF, text, cue cards)</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Unlimited speech revisions</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✅</span>
-                <span>Lifetime access to all tools</span>
+              <div className="hero-stats">
+                <div className="stat-item">
+                  <span className="stat-number">10,000+</span>
+                  <span className="stat-label">Speeches Created</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">98%</span>
+                  <span className="stat-label">Satisfaction Rate</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">30 Days</span>
+                  <span className="stat-label">Money-Back Guarantee</span>
+                </div>
               </div>
             </div>
+          </section>
 
-            <div className="pricing-cta">
-              <Link to="/builder" className="btn btn-primary btn-large">
-                Start Creating My Speech
-              </Link>
-              <p className="pricing-guarantee">
-                30-day money-back guarantee
-              </p>
+          {/* Main Pricing Card */}
+          <section className={`pricing-main ${isVisible ? 'animate-in-delay' : ''}`}>
+            <div className="pricing-card-container">
+              <div className="pricing-card-modern">
+                <div className="pricing-card-header">
+                  <div className="popular-badge">
+                    <span className="badge-icon">⭐</span>
+                    <span>Most Popular</span>
+                  </div>
+                  <div className="pricing-icon">
+                    <div className="speech-graphic">🎤</div>
+                  </div>
+                  <h2 className="package-title">Complete Speech Package</h2>
+                  <p className="package-subtitle">Everything you need for the perfect speech</p>
+                </div>
+
+                <div className="pricing-amount">
+                  <div className="price-display">
+                    <span className="currency">$</span>
+                    <span className="amount">19</span>
+                    <div className="price-details">
+                      <span className="period">one-time payment</span>
+                      <span className="savings">Save $480+ vs traditional writers</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="features-grid">
+                  <div className="feature-category">
+                    <h4 className="category-title">🤖 AI-Powered Writing</h4>
+                    <div className="feature-list">
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Personalized speech generation</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>4 unique styles (witty, formal, heartfelt, inspiring)</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Unlimited revisions & editing</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="feature-category">
+                    <h4 className="category-title">🎯 Practice Tools</h4>
+                    <div className="feature-list">
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Interactive teleprompter</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Pacing analysis & timing tools</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Audio recording & playback</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="feature-category">
+                    <h4 className="category-title">📄 Export & Share</h4>
+                    <div className="feature-list">
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>PDF, text & cue card formats</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Print-ready layouts</span>
+                      </div>
+                      <div className="feature-item">
+                        <span className="feature-check">✓</span>
+                        <span>Lifetime access to all content</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pricing-cta-section">
+                  <Link to="/builder" className="cta-button-modern">
+                    <span className="cta-text">Start Creating My Speech</span>
+                    <span className="cta-arrow">→</span>
+                  </Link>
+                  <div className="guarantee-badge">
+                    <span className="guarantee-icon">🛡️</span>
+                    <span className="guarantee-text">30-day money-back guarantee</span>
+                  </div>
+                  <div className="payment-security">
+                    <span className="security-text">Secure payment by</span>
+                    <div className="payment-icons">
+                      <span className="payment-brand">Stripe</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
         {/* Value Proposition */}
         <section className="pricing-value">
@@ -100,87 +183,280 @@ const PricingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Comparison Section */}
-        <section className="pricing-comparison">
-          <h2>Compare with Traditional Options</h2>
-          <div className="comparison-table">
-            <div className="comparison-header">
-              <div className="comparison-feature">Feature</div>
-              <div className="comparison-writeaspeech">writeaspeech.org</div>
-              <div className="comparison-traditional">Traditional Speech Writer</div>
+          {/* Comparison Table */}
+          <section className={`comparison-section ${isVisible ? 'animate-in-delay-2' : ''}`}>
+            <div className="comparison-header-text">
+              <h2 className="comparison-title">See How We Compare</h2>
+              <p className="comparison-subtitle">
+                Why choose writeaspeech.org over traditional speechwriters and other options?
+              </p>
             </div>
-            <div className="comparison-row">
-              <div className="comparison-feature">Cost</div>
-              <div className="comparison-writeaspeech">$19 one-time</div>
-              <div className="comparison-traditional">$200-500+ per speech</div>
-            </div>
-            <div className="comparison-row">
-              <div className="comparison-feature">Turnaround Time</div>
-              <div className="comparison-writeaspeech">Instant</div>
-              <div className="comparison-traditional">3-7 days</div>
-            </div>
-            <div className="comparison-row">
-              <div className="comparison-feature">Revisions</div>
-              <div className="comparison-writeaspeech">Unlimited</div>
-              <div className="comparison-traditional">2-3 rounds</div>
-            </div>
-            <div className="comparison-row">
-              <div className="comparison-feature">Practice Tools</div>
-              <div className="comparison-writeaspeech">Included</div>
-              <div className="comparison-traditional">Not included</div>
-            </div>
-            <div className="comparison-row">
-              <div className="comparison-feature">Multiple Formats</div>
-              <div className="comparison-writeaspeech">PDF, Text, Cue Cards</div>
-              <div className="comparison-traditional">Text only</div>
-            </div>
-          </div>
-        </section>
 
-        {/* FAQ Section */}
-        <section className="pricing-faq">
-          <h2>Frequently Asked Questions</h2>
-          <div className="faq-list">
-            <div className="faq-item">
-              <h3>Is this really a one-time payment?</h3>
-              <p>Yes! You pay $19 once and get lifetime access to all features. No monthly subscriptions or recurring charges.</p>
+            <div className="comparison-table-modern">
+              <div className="table-container">
+                <table className="comparison-table">
+                  <thead>
+                    <tr className="table-header">
+                      <th className="feature-column">
+                        <span className="column-title">Features</span>
+                      </th>
+                      <th className="writeaspeech-column highlighted">
+                        <div className="column-header">
+                          <div className="logo-badge">
+                            <span className="logo-icon">🎤</span>
+                            <span className="brand-name">writeaspeech.org</span>
+                          </div>
+                          <div className="best-value-badge">Best Value</div>
+                        </div>
+                      </th>
+                      <th className="traditional-column">
+                        <div className="column-header">
+                          <span className="service-name">Traditional Writer</span>
+                          <span className="service-price">$200-500+</span>
+                        </div>
+                      </th>
+                      <th className="diy-column">
+                        <div className="column-header">
+                          <span className="service-name">DIY Writing</span>
+                          <span className="service-price">Free (but costly)</span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">💰</span>
+                        <span>Cost</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">$19 one-time</span>
+                          <span className="badge">Best Deal</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value expensive">$200-500+ per speech</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value">Free (time cost high)</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">⚡</span>
+                        <span>Delivery Time</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">Instant</span>
+                          <span className="badge">Fastest</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value">3-7 days</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value">Hours to weeks</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">🔄</span>
+                        <span>Revisions</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">Unlimited</span>
+                          <span className="badge">No Limits</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value">2-3 rounds</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value">Self-managed</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">🎯</span>
+                        <span>Practice Tools</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">Full Toolkit</span>
+                          <span className="badge">Complete</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value not-included">Not included</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value not-included">None</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">📄</span>
+                        <span>Export Formats</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">PDF, Text, Cue Cards</span>
+                          <span className="badge">3 Formats</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value">Text/Word only</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value">Manual formatting</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="table-row">
+                      <td className="feature-name">
+                        <span className="feature-icon">🛡️</span>
+                        <span>Guarantee</span>
+                      </td>
+                      <td className="writeaspeech-cell highlighted">
+                        <div className="cell-content winner">
+                          <span className="value">30-day money-back</span>
+                          <span className="badge">Risk-Free</span>
+                        </div>
+                      </td>
+                      <td className="traditional-cell">
+                        <div className="cell-content">
+                          <span className="value">Varies</span>
+                        </div>
+                      </td>
+                      <td className="diy-cell">
+                        <div className="cell-content">
+                          <span className="value not-included">No guarantee</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="faq-item">
-              <h3>What if I need help with my speech?</h3>
-              <p>We provide unlimited revisions and support. If you're not happy with your speech, we'll work with you to make it perfect.</p>
-            </div>
-            <div className="faq-item">
-              <h3>Can I use this for multiple speeches?</h3>
-              <p>Absolutely! Your one-time payment gives you access to create unlimited speeches for any occasion.</p>
-            </div>
-            <div className="faq-item">
-              <h3>What payment methods do you accept?</h3>
-              <p>We accept all major credit cards, PayPal, and other secure payment methods through Stripe.</p>
-            </div>
-            <div className="faq-item">
-              <h3>Is there a money-back guarantee?</h3>
-              <p>Yes! If you're not completely satisfied within 30 days, we'll provide a full refund, no questions asked.</p>
-            </div>
-          </div>
-        </section>
 
-        {/* CTA Section */}
-        <section className="pricing-cta-section">
-          <div className="cta-content">
-            <h2>Ready to Create Your Perfect Speech?</h2>
-            <p>Join thousands of satisfied customers who've delivered memorable speeches with confidence.</p>
-            <div className="cta-buttons">
-              <Link to="/builder" className="btn btn-primary btn-large">
-                Get Started Now - $19
-              </Link>
-              <Link to="/help" className="btn btn-secondary">
-                Have Questions? Contact Us
-              </Link>
+            <div className="comparison-cta">
+              <div className="cta-content">
+                <h3>Ready to experience the difference?</h3>
+                <p>Join thousands who chose the smarter way to write speeches</p>
+                <Link to="/builder" className="comparison-cta-button">
+                  Get Started for $19 →
+                </Link>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {/* FAQ Section */}
+          <section className={`faq-section ${isVisible ? 'animate-in-delay-3' : ''}`}>
+            <div className="faq-header">
+              <h2 className="faq-title">Frequently Asked Questions</h2>
+              <p className="faq-subtitle">Everything you need to know about our pricing and service</p>
+            </div>
+            
+            <div className="faq-grid">
+              <div className="faq-item-modern">
+                <div className="faq-icon">💳</div>
+                <h3 className="faq-question">Is this really a one-time payment?</h3>
+                <p className="faq-answer">Yes! You pay $19 once and get lifetime access to all features. No monthly subscriptions or recurring charges.</p>
+              </div>
+              <div className="faq-item-modern">
+                <div className="faq-icon">🔄</div>
+                <h3 className="faq-question">Can I create multiple speeches?</h3>
+                <p className="faq-answer">Absolutely! Your one-time payment gives you access to create unlimited speeches for any occasion, anytime.</p>
+              </div>
+              <div className="faq-item-modern">
+                <div className="faq-icon">🛡️</div>
+                <h3 className="faq-question">What's your refund policy?</h3>
+                <p className="faq-answer">We offer a 30-day money-back guarantee. If you're not completely satisfied, we'll provide a full refund, no questions asked.</p>
+              </div>
+              <div className="faq-item-modern">
+                <div className="faq-icon">💎</div>
+                <h3 className="faq-question">What payment methods do you accept?</h3>
+                <p className="faq-answer">We accept all major credit cards, PayPal, and other secure payment methods through Stripe for your convenience.</p>
+              </div>
+              <div className="faq-item-modern">
+                <div className="faq-icon">⚡</div>
+                <h3 className="faq-question">How quickly can I get my speech?</h3>
+                <p className="faq-answer">Instantly! Our AI generates your personalized speech in seconds. You can start practicing and refining immediately.</p>
+              </div>
+              <div className="faq-item-modern">
+                <div className="faq-icon">🎯</div>
+                <h3 className="faq-question">What if I need help or support?</h3>
+                <p className="faq-answer">We provide unlimited revisions and support. Our team is here to ensure you get the perfect speech for your occasion.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Final CTA Section */}
+          <section className={`final-cta-section ${isVisible ? 'animate-in-delay-4' : ''}`}>
+            <div className="final-cta-container">
+              <div className="cta-background">
+                <div className="cta-content-modern">
+                  <div className="cta-badge">🚀 Ready to Get Started?</div>
+                  <h2 className="cta-title">Create Your Perfect Speech Today</h2>
+                  <p className="cta-description">
+                    Join over 10,000 satisfied customers who chose the smart way to write memorable speeches. 
+                    Get started in seconds with our one-time payment.
+                  </p>
+                  
+                  <div className="cta-buttons-modern">
+                    <Link to="/builder" className="primary-cta-button">
+                      <span className="cta-button-text">Start Creating My Speech</span>
+                      <span className="cta-button-price">Only $19</span>
+                    </Link>
+                    <Link to="/help" className="secondary-cta-button">
+                      <span className="help-icon">💬</span>
+                      <span>Have Questions?</span>
+                    </Link>
+                  </div>
+
+                  <div className="cta-guarantees">
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">⚡</span>
+                      <span>Instant Access</span>
+                    </div>
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">🛡️</span>
+                      <span>30-Day Guarantee</span>
+                    </div>
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">🔒</span>
+                      <span>Secure Payment</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
