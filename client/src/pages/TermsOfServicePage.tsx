@@ -140,7 +140,7 @@ const TermsOfServicePage: React.FC = () => {
             You retain ownership of the personal stories, information, and content you provide 
             to our service. By using our service, you grant us a limited license to use this 
             content solely for the purpose of providing our services to you.
-          </h3>
+          </p>
 
           <h3>Generated Speeches</h3>
           <p>
