@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const HelpPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('getting-started');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const faqData = {
     'getting-started': [
@@ -107,176 +113,325 @@ const HelpPage: React.FC = () => {
     setOpenFaq(openFaq === id ? null : id);
   };
 
+  // Filter FAQs based on search query
+  const filteredFaqData = Object.entries(faqData).reduce((acc, [category, faqs]) => {
+    const filteredFaqs = faqs.filter(faq => 
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    if (filteredFaqs.length > 0) {
+      (acc as any)[category] = filteredFaqs;
+    }
+    return acc;
+  }, {} as typeof faqData);
+
   return (
-    <div className="page-container">
-      <div className="container">
-        {/* Header Section */}
-        <section className="help-header">
-          <h1 className="page-title">Help Center</h1>
-          <p className="page-subtitle">
-            Find answers to common questions and get the support you need
-          </p>
-        </section>
+    <>
+      {/* SEO Meta Tags */}
+      <head>
+        <title>Help Center - writeaspeech.org | FAQs & Support</title>
+        <meta name="description" content="Get help with writeaspeech.org. Find answers to common questions about speech writing, pricing, features, and support. 24/7 customer assistance available." />
+        <meta name="keywords" content="writeaspeech help, speech writing support, FAQ, customer service, speech generator help, AI speechwriter assistance" />
+        <meta property="og:title" content="Help Center - writeaspeech.org | FAQs & Support" />
+        <meta property="og:description" content="Get help with writeaspeech.org. Find answers to common questions and get the support you need." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Help Center - writeaspeech.org | FAQs & Support" />
+        <meta name="twitter:description" content="Get help with writeaspeech.org. Find answers to common questions and get the support you need." />
+        <link rel="canonical" href="https://writeaspeech.org/help" />
+      </head>
 
-        {/* Quick Help Section */}
-        <section className="quick-help">
-          <h2>Quick Help</h2>
-          <div className="quick-help-grid">
-            <Link to="/builder" className="quick-help-card">
-              <div className="quick-help-icon">🎤</div>
-              <h3>Create a Speech</h3>
-              <p>Start building your personalized speech in minutes</p>
-            </Link>
-            <Link to="/pricing" className="quick-help-card">
-              <div className="quick-help-icon">💰</div>
-              <h3>View Pricing</h3>
-              <p>See our simple, transparent pricing structure</p>
-            </Link>
-            <a href="mailto:support@writeaspeech.org" className="quick-help-card">
-              <div className="quick-help-icon">📧</div>
-              <h3>Contact Support</h3>
-              <p>Get help from our support team</p>
-            </a>
-            <Link to="/about" className="quick-help-card">
-              <div className="quick-help-icon">ℹ️</div>
-              <h3>Learn More</h3>
-              <p>Discover more about our platform</p>
-            </Link>
-          </div>
-        </section>
+      <div className="help-page">
+        <div className="help-container">
+          {/* Hero Section */}
+          <section className={`help-hero-modern ${isVisible ? 'animate-in' : ''}`}>
+            <div className="help-hero-content">
+              <div className="hero-badge-help">
+                <span className="badge-icon">💬</span>
+                <span>Help Center</span>
+              </div>
+              <h1 className="help-hero-title">
+                How can we <span className="highlight-text">help you</span> today?
+              </h1>
+              <p className="help-hero-subtitle">
+                Find answers to common questions, get step-by-step guidance, or contact our support team. 
+                We're here to help you create amazing speeches with confidence.
+              </p>
+              
+              {/* Search Bar */}
+              <div className="help-search-container">
+                <div className="search-bar">
+                  <span className="search-icon">🔍</span>
+                  <input
+                    type="text"
+                    placeholder="Search for help articles, features, or common questions..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                  />
+                  {searchQuery && (
+                    <button 
+                      className="clear-search"
+                      onClick={() => setSearchQuery('')}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <div className="search-suggestions">
+                  <span>Popular searches:</span>
+                  <button onClick={() => setSearchQuery('pricing')}>Pricing</button>
+                  <button onClick={() => setSearchQuery('teleprompter')}>Teleprompter</button>
+                  <button onClick={() => setSearchQuery('export')}>Export speech</button>
+                  <button onClick={() => setSearchQuery('refund')}>Refund</button>
+                </div>
+              </div>
+            </div>
+          </section>
 
-        {/* FAQ Section */}
-        <section className="help-faq">
-          <h2>Frequently Asked Questions</h2>
-          
-          {/* Category Tabs */}
-          <div className="faq-categories">
-            {categories.map(category => (
-              <button
-                key={category.id}
-                className={`category-tab ${activeCategory === category.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(category.id)}
-              >
-                <span className="category-icon">{category.icon}</span>
-                <span className="category-name">{category.name}</span>
-              </button>
-            ))}
-          </div>
+          {/* Quick Actions Section */}
+          <section className={`quick-actions-modern ${isVisible ? 'animate-in-delay' : ''}`}>
+            <div className="quick-actions-header">
+              <h2 className="section-title">Quick Actions</h2>
+              <p className="section-subtitle">Get started with the most common tasks</p>
+            </div>
+            <div className="quick-actions-grid">
+              <Link to="/builder" className="action-card primary">
+                <div className="action-icon">🎤</div>
+                <div className="action-content">
+                  <h3>Create a Speech</h3>
+                  <p>Start building your personalized speech in minutes</p>
+                  <span className="action-arrow">→</span>
+                </div>
+              </Link>
+              <Link to="/pricing" className="action-card">
+                <div className="action-icon">💰</div>
+                <div className="action-content">
+                  <h3>View Pricing</h3>
+                  <p>See our simple, transparent pricing</p>
+                  <span className="action-arrow">→</span>
+                </div>
+              </Link>
+              <a href="mailto:support@writeaspeech.org" className="action-card">
+                <div className="action-icon">📧</div>
+                <div className="action-content">
+                  <h3>Contact Support</h3>
+                  <p>Get help from our expert team</p>
+                  <span className="action-arrow">→</span>
+                </div>
+              </a>
+              <Link to="/about" className="action-card">
+                <div className="action-icon">ℹ️</div>
+                <div className="action-content">
+                  <h3>Learn More</h3>
+                  <p>Discover more about our platform</p>
+                  <span className="action-arrow">→</span>
+                </div>
+              </Link>
+            </div>
+          </section>
 
-          {/* FAQ Items */}
-          <div className="faq-content">
-            {faqData[activeCategory as keyof typeof faqData]?.map(faq => (
-              <div key={faq.id} className="faq-item">
-                <button
-                  className="faq-question"
-                  onClick={() => toggleFaq(faq.id)}
-                >
-                  <span>{faq.question}</span>
-                  <span className="faq-toggle">
-                    {openFaq === faq.id ? '−' : '+'}
-                  </span>
-                </button>
-                {openFaq === faq.id && (
-                  <div className="faq-answer">
-                    <p>{faq.answer}</p>
+          {/* FAQ Section */}
+          <section className={`faq-section-modern ${isVisible ? 'animate-in-delay-2' : ''}`}>
+            <div className="faq-header-modern">
+              <h2 className="faq-title-modern">Frequently Asked Questions</h2>
+              <p className="faq-subtitle-modern">
+                {searchQuery ? `Search results for "${searchQuery}"` : 'Find answers to common questions organized by category'}
+              </p>
+            </div>
+            
+            {!searchQuery && (
+              <div className="category-tabs-modern">
+                {categories.map(category => (
+                  <button
+                    key={category.id}
+                    className={`category-tab-modern ${activeCategory === category.id ? 'active' : ''}`}
+                    onClick={() => setActiveCategory(category.id)}
+                  >
+                    <span className="tab-icon">{category.icon}</span>
+                    <span className="tab-name">{category.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="faq-content-modern">
+              {searchQuery ? (
+                // Show filtered results across all categories
+                Object.entries(filteredFaqData).length === 0 ? (
+                  <div className="no-results">
+                    <div className="no-results-icon">🔍</div>
+                    <h3>No results found</h3>
+                    <p>Try searching with different keywords or browse our categories above.</p>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
+                ) : (
+                  Object.entries(filteredFaqData).map(([category, faqs]) => (
+                    <div key={category} className="search-category">
+                      <h3 className="search-category-title">
+                        {categories.find(c => c.id === category)?.icon} {categories.find(c => c.id === category)?.name}
+                      </h3>
+                      {faqs.map(faq => (
+                        <div key={faq.id} className="faq-card-modern">
+                          <button
+                            className="faq-question-modern"
+                            onClick={() => toggleFaq(faq.id)}
+                          >
+                            <span className="question-text">{faq.question}</span>
+                            <span className={`faq-toggle-modern ${openFaq === faq.id ? 'open' : ''}`}>
+                              <span className="toggle-icon">+</span>
+                            </span>
+                          </button>
+                          {openFaq === faq.id && (
+                            <div className="faq-answer-modern">
+                              <p>{faq.answer}</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ))
+                )
+              ) : (
+                // Show current category FAQs
+                faqData[activeCategory as keyof typeof faqData]?.map(faq => (
+                  <div key={faq.id} className="faq-card-modern">
+                    <button
+                      className="faq-question-modern"
+                      onClick={() => toggleFaq(faq.id)}
+                    >
+                      <span className="question-text">{faq.question}</span>
+                      <span className={`faq-toggle-modern ${openFaq === faq.id ? 'open' : ''}`}>
+                        <span className="toggle-icon">+</span>
+                      </span>
+                    </button>
+                    {openFaq === faq.id && (
+                      <div className="faq-answer-modern">
+                        <p>{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
 
-        {/* Video Tutorials Section */}
-        <section className="help-tutorials">
-          <h2>Video Tutorials</h2>
-          <div className="tutorials-grid">
-            <div className="tutorial-card">
-              <div className="tutorial-thumbnail">
-                <div className="play-button">▶️</div>
-                <div className="tutorial-placeholder">Video Thumbnail</div>
-              </div>
-              <div className="tutorial-info">
-                <h3>Getting Started Guide</h3>
-                <p>Learn how to create your first speech in 5 minutes</p>
-                <span className="tutorial-duration">5:30</span>
-              </div>
+          {/* Support Section */}
+          <section className={`support-section-modern ${isVisible ? 'animate-in-delay-3' : ''}`}>
+            <div className="support-header">
+              <h2 className="support-title">Still Need Help?</h2>
+              <p className="support-subtitle">Our dedicated support team is here to help you succeed</p>
             </div>
-            <div className="tutorial-card">
-              <div className="tutorial-thumbnail">
-                <div className="play-button">▶️</div>
-                <div className="tutorial-placeholder">Video Thumbnail</div>
-              </div>
-              <div className="tutorial-info">
-                <h3>Using the Teleprompter</h3>
-                <p>Master the teleprompter for confident delivery</p>
-                <span className="tutorial-duration">3:45</span>
-              </div>
-            </div>
-            <div className="tutorial-card">
-              <div className="tutorial-thumbnail">
-                <div className="play-button">▶️</div>
-                <div className="tutorial-placeholder">Video Thumbnail</div>
-              </div>
-              <div className="tutorial-info">
-                <h3>Practice Tools Overview</h3>
-                <p>Explore all the tools to perfect your speech</p>
-                <span className="tutorial-duration">7:20</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Support Section */}
-        <section className="help-contact">
-          <div className="contact-content">
-            <h2>Still Need Help?</h2>
-            <p>
-              Can't find what you're looking for? Our support team is here to help you succeed.
-            </p>
-            <div className="contact-methods">
-              <div className="contact-method">
-                <div className="contact-icon">📧</div>
-                <h3>Email Support</h3>
-                <p>Get help via email within 24 hours</p>
-                <a href="mailto:support@writeaspeech.org" className="contact-link">
-                  support@writeaspeech.org
-                </a>
-              </div>
-              <div className="contact-method">
-                <div className="contact-icon">💬</div>
+            
+            <div className="support-grid">
+              <div className="support-card primary">
+                <div className="support-card-header">
+                  <div className="support-icon">💬</div>
+                  <div className="support-badge">Most Popular</div>
+                </div>
                 <h3>Live Chat</h3>
-                <p>Chat with us in real-time (Mon-Fri, 9AM-6PM EST)</p>
-                <button className="contact-link">Start Chat</button>
+                <p>Get instant help from our support team. Average response time: 2 minutes.</p>
+                <div className="support-features">
+                  <span className="feature">✓ Real-time assistance</span>
+                  <span className="feature">✓ Screen sharing available</span>
+                  <span className="feature">✓ Mon-Fri, 9AM-6PM EST</span>
+                </div>
+                <button className="support-cta">Start Chat Now</button>
               </div>
-              <div className="contact-method">
-                <div className="contact-icon">📞</div>
+              
+              <div className="support-card">
+                <div className="support-card-header">
+                  <div className="support-icon">📧</div>
+                  <div className="response-time">24h response</div>
+                </div>
+                <h3>Email Support</h3>
+                <p>Send us detailed questions and get comprehensive answers from our experts.</p>
+                <div className="support-features">
+                  <span className="feature">✓ Detailed responses</span>
+                  <span className="feature">✓ File attachments</span>
+                  <span className="feature">✓ Follow-up support</span>
+                </div>
+                <a href="mailto:support@writeaspeech.org" className="support-cta secondary">
+                  Send Email
+                </a>
+              </div>
+              
+              <div className="support-card">
+                <div className="support-card-header">
+                  <div className="support-icon">📞</div>
+                  <div className="response-time">Immediate</div>
+                </div>
                 <h3>Phone Support</h3>
-                <p>Call us for immediate assistance</p>
-                <a href="tel:+1-555-SPEECH" className="contact-link">
-                  +1 (555) SPEECH
+                <p>Call us for urgent issues or complex problems that need immediate attention.</p>
+                <div className="support-features">
+                  <span className="feature">✓ Voice support</span>
+                  <span className="feature">✓ Technical guidance</span>
+                  <span className="feature">✓ Priority assistance</span>
+                </div>
+                <a href="tel:+1-555-SPEECH" className="support-cta secondary">
+                  Call Now
                 </a>
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* CTA Section */}
-        <section className="help-cta">
-          <div className="cta-content">
-            <h2>Ready to Create Your Speech?</h2>
-            <p>Don't let public speaking anxiety hold you back. Start creating your perfect speech today.</p>
-            <div className="cta-buttons">
-              <Link to="/builder" className="btn btn-primary btn-large">
-                Create My Speech
-              </Link>
-              <Link to="/pricing" className="btn btn-secondary">
-                View Pricing
-              </Link>
+            <div className="support-stats">
+              <div className="stat-item">
+                <span className="stat-number">98%</span>
+                <span className="stat-label">Satisfaction Rate</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">2 min</span>
+                <span className="stat-label">Avg Response Time</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-number">24/7</span>
+                <span className="stat-label">Knowledge Base</span>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {/* Final CTA Section */}
+          <section className={`help-cta-modern ${isVisible ? 'animate-in-delay-4' : ''}`}>
+            <div className="help-cta-container">
+              <div className="help-cta-background">
+                <div className="help-cta-content">
+                  <div className="cta-badge-help">🚀 Ready to Get Started?</div>
+                  <h2 className="help-cta-title">Create your perfect speech today</h2>
+                  <p className="help-cta-description">
+                    Don't let public speaking anxiety hold you back. Join thousands who've found their voice with writeaspeech.org.
+                  </p>
+                  
+                  <div className="help-cta-buttons">
+                    <Link to="/builder" className="primary-help-cta-button">
+                      <span className="cta-button-text">Create My Speech</span>
+                      <span className="cta-button-price">Only $19</span>
+                    </Link>
+                    <Link to="/pricing" className="secondary-help-cta-button">
+                      <span className="pricing-icon">💰</span>
+                      <span>View Pricing</span>
+                    </Link>
+                  </div>
+
+                  <div className="help-cta-guarantees">
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">⚡</span>
+                      <span>Instant Generation</span>
+                    </div>
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">🛡️</span>
+                      <span>30-Day Guarantee</span>
+                    </div>
+                    <div className="guarantee-item">
+                      <span className="guarantee-icon">💬</span>
+                      <span>24/7 Support</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
