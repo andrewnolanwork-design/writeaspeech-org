@@ -28,20 +28,6 @@ const HomePage: React.FC = () => {
                 alt="Professional woman giving a confident speech" 
                 className="hero-main-image"
               />
-              <div className="image-overlay">
-                <div className="overlay-gradient"></div>
-                <div className="floating-elements">
-                  <div className="speech-bubble animate-float">
-                    "Today, I want to share..."
-                  </div>
-                  <div className="confidence-indicator animate-float-delay">
-                    ✨ Confident & Prepared
-                  </div>
-                  <div className="success-badge animate-float-delay-2">
-                    🎯 Perfect Speech
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
