@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 
+// Import hero image
+import professionalSpeechImage from '../assets/images/Woman Giving Professional Speech.png';
+
 const HomePage: React.FC = () => {
   return (
     <div>
@@ -18,17 +21,26 @@ const HomePage: React.FC = () => {
           </div>
         </div>
         <div className="hero-visual">
-          <div className="hero-image">
-            <div className="hero-placeholder">
-              <div className="speech-icon">🎤</div>
-              <div className="hero-text">Professional Speech Writing</div>
-            </div>
-            <div className="speech-elements">
-              <div className="speech-bubble">
-                "Today, I want to share..."
-              </div>
-              <div className="confidence-indicator">
-                ✨ Confident & Prepared
+          <div className="hero-image-container">
+            <div className="professional-speech-image">
+              <img 
+                src={professionalSpeechImage} 
+                alt="Professional woman giving a confident speech" 
+                className="hero-main-image"
+              />
+              <div className="image-overlay">
+                <div className="overlay-gradient"></div>
+                <div className="floating-elements">
+                  <div className="speech-bubble animate-float">
+                    "Today, I want to share..."
+                  </div>
+                  <div className="confidence-indicator animate-float-delay">
+                    ✨ Confident & Prepared
+                  </div>
+                  <div className="success-badge animate-float-delay-2">
+                    🎯 Perfect Speech
+                  </div>
+                </div>
               </div>
             </div>
           </div>
