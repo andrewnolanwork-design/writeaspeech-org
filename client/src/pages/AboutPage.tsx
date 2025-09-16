@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
+// Import team member images
+import ceoImage from '../assets/images/CEO Image.png';
+import headOfAiImage from '../assets/images/Head of AI.png';
+import headOfDesignImage from '../assets/images/Head of Design.png';
+
 const AboutPage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTimelineItem, setActiveTimelineItem] = useState(0);
@@ -256,7 +261,7 @@ const AboutPage: React.FC = () => {
                 <div className="member-avatar-modern">
                   <div className="member-photo-container">
                     <img 
-                      src="/src/assets/images/CEO Image.png" 
+                      src={ceoImage} 
                       alt="Andrew Nolan - Founder & CEO" 
                       className="member-photo"
                     />
@@ -282,7 +287,7 @@ const AboutPage: React.FC = () => {
                 <div className="member-avatar-modern">
                   <div className="member-photo-container">
                     <img 
-                      src="/src/assets/images/Head of AI.png" 
+                      src={headOfAiImage} 
                       alt="Sarah Chen - Head of AI & Product" 
                       className="member-photo"
                     />
@@ -308,7 +313,7 @@ const AboutPage: React.FC = () => {
                 <div className="member-avatar-modern">
                   <div className="member-photo-container">
                     <img 
-                      src="/src/assets/images/Head of Design.png" 
+                      src={headOfDesignImage} 
                       alt="Marcus Rodriguez - Head of Design" 
                       className="member-photo"
                     />
