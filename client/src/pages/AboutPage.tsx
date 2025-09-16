@@ -254,8 +254,12 @@ const AboutPage: React.FC = () => {
             <div className="team-grid-modern">
               <div className="team-card-modern">
                 <div className="member-avatar-modern">
-                  <div className="avatar-bg">
-                    <span className="avatar-emoji">👨‍💻</span>
+                  <div className="member-photo-container">
+                    <img 
+                      src="/src/assets/images/CEO Image.png" 
+                      alt="Andrew Nolan - Founder & CEO" 
+                      className="member-photo"
+                    />
                   </div>
                   <div className="member-status">
                     <span className="status-dot"></span>
@@ -276,8 +280,12 @@ const AboutPage: React.FC = () => {
               
               <div className="team-card-modern">
                 <div className="member-avatar-modern">
-                  <div className="avatar-bg">
-                    <span className="avatar-emoji">👩‍💻</span>
+                  <div className="member-photo-container">
+                    <img 
+                      src="/src/assets/images/Head of AI.png" 
+                      alt="Sarah Chen - Head of AI & Product" 
+                      className="member-photo"
+                    />
                   </div>
                   <div className="member-status">
                     <span className="status-dot"></span>
@@ -298,8 +306,12 @@ const AboutPage: React.FC = () => {
               
               <div className="team-card-modern">
                 <div className="member-avatar-modern">
-                  <div className="avatar-bg">
-                    <span className="avatar-emoji">👨‍🎨</span>
+                  <div className="member-photo-container">
+                    <img 
+                      src="/src/assets/images/Head of Design.png" 
+                      alt="Marcus Rodriguez - Head of Design" 
+                      className="member-photo"
+                    />
                   </div>
                   <div className="member-status">
                     <span className="status-dot"></span>
