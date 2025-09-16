@@ -2513,6 +2513,18 @@ body {
   background: #f8fafc;
 }
 
+.professional-speech-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
 .hero-main-image {
   width: 100%;
   height: 400px;
@@ -2552,48 +2564,56 @@ body {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  padding: 2rem;
+  justify-content: space-between;
+  padding: 1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .speech-bubble {
   background: rgba(255, 255, 255, 0.95);
   color: #374151;
-  padding: 0.75rem 1.25rem;
-  border-radius: 25px;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
   font-style: italic;
   font-weight: 500;
+  font-size: 0.9rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   align-self: flex-start;
-  max-width: 200px;
+  max-width: 180px;
+  line-height: 1.3;
 }
 
 .confidence-indicator {
   background: rgba(34, 197, 94, 0.95);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
   font-weight: 600;
-  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
   backdrop-filter: blur(10px);
   align-self: center;
   white-space: nowrap;
+  max-width: 150px;
+  text-align: center;
 }
 
 .success-badge {
   background: rgba(59, 130, 246, 0.95);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
   font-weight: 600;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
   backdrop-filter: blur(10px);
   align-self: flex-end;
   white-space: nowrap;
+  max-width: 130px;
+  text-align: center;
 }
 
 /* Floating Animations */
@@ -2839,6 +2859,38 @@ body {
   
   .hero-placeholder {
     height: 300px;
+  }
+  
+  .hero-image-container {
+    max-width: 400px;
+  }
+  
+  .hero-main-image {
+    height: 300px;
+  }
+  
+  .floating-elements {
+    padding: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .speech-bubble {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+    max-width: 140px;
+  }
+  
+  .confidence-indicator {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+    max-width: 120px;
+  }
+  
+  .success-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+    max-width: 100px;
   }
   
   .speech-icon {
