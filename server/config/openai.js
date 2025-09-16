@@ -72,19 +72,32 @@ async function generateSpeech({
     });
 
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
+      model: process.env.OPENAI_MODEL || 'gpt-4', // Upgraded to GPT-4 for better quality
       messages: [
         {
           role: 'system',
-          content: 'You are a professional speechwriter who creates personalized, engaging speeches for various occasions. Your speeches should be well-structured, authentic, and tailored to the speaker\'s style and audience.'
+          content: `You are an expert speechwriter who writes like real people talk - conversational, authentic, and deeply human. 
+
+CRITICAL RULES:
+- Write as if the speaker is having an intimate conversation with close friends
+- Use contractions naturally (I'm, don't, we'll, that's)
+- Include emotional pauses, natural hesitations, and conversational connectors
+- NEVER use AI-sounding phrases like "In conclusion," "Furthermore," "Moreover," "Additionally"
+- Start with genuine, personal openings, not formal announcements
+- Use specific, vivid details that paint pictures in listeners' minds
+- Include genuine emotions and vulnerability when appropriate
+- End with heartfelt, memorable moments, not summary statements
+- Make every sentence sound like something a real person would actually say out loud
+- Include natural speech patterns like "You know what I mean?" or "And here's the thing..."
+- Use storytelling techniques with dialogue, sensory details, and emotional peaks`
         },
         {
           role: 'user',
           content: prompt
         }
       ],
-      max_tokens: 1500,
-      temperature: 0.7,
+      max_tokens: 2500, // Increased for longer, more detailed speeches
+      temperature: 0.8, // Slightly higher for more creative, human-like output
     });
 
     return completion.choices[0].message.content.trim();
@@ -106,54 +119,173 @@ function createSpeechPrompt({
   personal_stories,
   additionalContext
 }) {
-  let prompt = `Please write a ${style.toLowerCase()} ${occasion.toLowerCase()} speech that is ${length} long.
+  const humanWritingTechniques = getHumanWritingTechniques(style, occasion);
+  const emotionalTone = getEmotionalTone(style, occasion);
+  const conversationalElements = getConversationalElements(style);
 
-**Audience:** ${audience}
+  let prompt = `Write a deeply human, conversational ${style.toLowerCase()} speech for a ${occasion.toLowerCase()}.
 
-**Style Guidelines:**
-- ${getStyleGuidelines(style)}
+🎯 **THE SPEAKER'S VOICE:**
+This person is speaking to ${audience}. They want to sound like themselves - genuine, real, and connected to everyone in the room.
 
-**Speech Length:** ${length}
-- ${getLengthGuidelines(length)}
+🎨 **STYLE & EMOTION:**
+${getAdvancedStyleGuidelines(style)}
+
+⏱️ **PACING & LENGTH:**
+Target ${getWordCount(length)} words (${length} speaking time).
+${getAdvancedLengthGuidelines(length)}
 
 `;
 
-  if (key_points.length > 0) {
-    prompt += `**Key Points to Include:**
-${key_points.map(point => `- ${point}`).join('\n')}
+  if (personal_stories.length > 0) {
+    prompt += `💝 **PERSONAL STORIES TO WEAVE IN:**
+${personal_stories.map((story, index) => `${index + 1}. ${story} 
+   → Transform this into vivid storytelling with dialogue, emotions, and sensory details`).join('\n')}
 
 `;
   }
 
-  if (personal_stories.length > 0) {
-    prompt += `**Personal Stories to Incorporate:**
-${personal_stories.map(story => `- ${story}`).join('\n')}
+  if (key_points.length > 0) {
+    prompt += `🎯 **KEY MESSAGES (weave naturally into stories, don't list):**
+${key_points.map(point => `• ${point}`).join('\n')}
 
 `;
   }
 
   if (additionalContext) {
-    prompt += `**Additional Context:**
+    prompt += `📝 **ADDITIONAL CONTEXT:**
 ${additionalContext}
 
 `;
   }
 
-  prompt += `**Requirements:**
-1. Create a well-structured speech with clear opening, body, and conclusion
-2. Make it personal and authentic to the speaker
-3. Include appropriate transitions between sections
-4. End with a memorable and impactful conclusion
-5. Ensure the tone matches the ${style.toLowerCase()} style throughout
-6. Target approximately ${getWordCount(length)} words
+  prompt += `🎪 **HUMAN WRITING TECHNIQUES TO USE:**
+${humanWritingTechniques}
 
-Please write the complete speech now:`;
+💬 **CONVERSATIONAL ELEMENTS:**
+${conversationalElements}
+
+🎭 **EMOTIONAL JOURNEY:**
+${emotionalTone}
+
+✨ **STRUCTURE REQUIREMENTS:**
+1. **Opening:** Start with a moment, feeling, or observation - NOT an announcement
+2. **Body:** Weave stories and messages together naturally, like you're talking to friends
+3. **Closing:** End with a genuine emotion or call to action that feels inevitable
+
+🚫 **ABSOLUTELY AVOID:**
+- Formal speech language ("Distinguished guests," "In conclusion")
+- Listing points mechanically
+- Generic phrases that could apply to anyone
+- Stiff transitions between sections
+- Summary endings that repeat what was just said
+
+Write the complete speech now, making it sound like a real person talking from the heart:`;
 
   return prompt;
 }
 
 /**
- * Get style-specific guidelines
+ * Get advanced style-specific guidelines for human-like writing
+ */
+function getAdvancedStyleGuidelines(style) {
+  const guidelines = {
+    'Heartfelt': `Write with genuine vulnerability and emotion. Use pauses like "And you know what?" or "Here's what I realized..." Share feelings honestly. Include moments where your voice might crack or you might tear up. Use intimate language like "I've got to tell you something..."`,
+    
+    'Witty': `Be conversationally funny - like you're the entertaining friend at dinner. Use timing with phrases like "But wait, it gets better..." Include self-deprecating humor. Use unexpected observations. Build to punchlines naturally. Include laughter cues like "I know, right?"`,
+    
+    'Formal': `Professional but warm and human. Use respectful language that still sounds conversational. Include thoughtful pauses. Show respect through specific acknowledgments. Use phrases like "I'm truly honored..." but keep it genuine, not stiff.`,
+    
+    'Inspiring': `Build energy naturally through storytelling. Use rising action with phrases like "But then something amazing happened..." Paint vivid pictures of possibility. Include calls to action that feel like invitations. Use "we" language to build connection.`
+  };
+  return guidelines[style] || guidelines['Heartfelt'];
+}
+
+/**
+ * Get human writing techniques for specific styles and occasions
+ */
+function getHumanWritingTechniques(style, occasion) {
+  const techniques = {
+    'Wedding': [
+      'Use sensory details about the couple (how they look at each other, inside jokes)',
+      'Include dialogue from actual conversations',
+      'Reference specific moments that made you realize their love was special',
+      'Use "I remember thinking..." or "I knew right then..."'
+    ],
+    'Birthday': [
+      'Share specific quirks or habits that make this person unique',
+      'Include funny stories with actual dialogue',
+      'Reference how they've impacted your life personally',
+      'Use age-appropriate humor that celebrates, not roasts'
+    ],
+    'Retirement': [
+      'Share specific work moments that show their character',
+      'Include how they mentored or helped others',
+      'Reference their legacy through specific examples',
+      'Connect their work values to their personal qualities'
+    ],
+    'Business Event': [
+      'Use specific project examples or achievements',
+      'Include how challenges were overcome together',
+      'Reference the human side of professional relationships',
+      'Connect business success to personal values'
+    ]
+  };
+  
+  return (techniques[occasion] || techniques['Business Event']).join('\n- ');
+}
+
+/**
+ * Get conversational elements for different styles
+ */
+function getConversationalElements(style) {
+  const elements = {
+    'Heartfelt': [
+      'Use natural pauses: "And here\'s the thing..."',
+      'Include vulnerable admissions: "I\'ll be honest with you..."',
+      'Add emotional connectors: "You know what gets me?"',
+      'Use inclusive language: "We all know that feeling when..."'
+    ],
+    'Witty': [
+      'Build anticipation: "So picture this..."',
+      'Use timing devices: "Now, I should mention..."',
+      'Include audience acknowledgment: "You\'re laughing, but..."',
+      'Add playful asides: "Don\'t tell them I said this, but..."'
+    ],
+    'Formal': [
+      'Use respectful transitions: "What strikes me most is..."',
+      'Include thoughtful observations: "I\'ve come to realize..."',
+      'Add appreciative language: "What I admire about..."',
+      'Use unifying phrases: "We\'re all here because..."'
+    ],
+    'Inspiring': [
+      'Build momentum: "Here\'s what\'s possible..."',
+      'Use collective vision: "Imagine if we all..."',
+      'Include action phrases: "Starting today, we can..."',
+      'Add energy builders: "And that\'s just the beginning..."'
+    ]
+  };
+  
+  return (elements[style] || elements['Heartfelt']).join('\n- ');
+}
+
+/**
+ * Get emotional tone guidance for style and occasion
+ */
+function getEmotionalTone(style, occasion) {
+  const tones = {
+    'Wedding_Heartfelt': 'Start with love and gratitude, build through shared memories, peak at the couple\'s future, end with celebration and blessing',
+    'Birthday_Witty': 'Open with playful teasing, build through funny stories, celebrate their uniqueness, end with genuine appreciation',
+    'Retirement_Inspiring': 'Begin with respect and accomplishment, journey through their impact, celebrate their legacy, end with excitement for their future',
+    'Business_Formal': 'Start with professional respect, build through shared achievements, acknowledge challenges overcome, end with future optimism'
+  };
+  
+  const key = `${occasion}_${style}`;
+  return tones[key] || 'Build emotional connection through authentic storytelling, peak at the most meaningful moment, end with genuine feeling';
+}
+
+/**
+ * Get legacy style guidelines (keeping for backward compatibility)
  */
 function getStyleGuidelines(style) {
   const guidelines = {
@@ -166,7 +298,19 @@ function getStyleGuidelines(style) {
 }
 
 /**
- * Get length-specific guidelines
+ * Get advanced length-specific guidelines for human pacing
+ */
+function getAdvancedLengthGuidelines(length) {
+  const guidelines = {
+    '2-3 minutes': 'Quick and punchy - one powerful story with a clear emotional peak. Think elevator conversation with a best friend. Build to one perfect moment.',
+    '3-5 minutes': 'Perfect for storytelling - open with connection, build through one main story with details, end with meaningful impact. Like sharing your favorite memory.',
+    '5-7 minutes': 'Room for a journey - multiple connected stories or one deep story with layers. Include dialogue, build emotional investment, create a satisfying arc.'
+  };
+  return guidelines[length] || guidelines['3-5 minutes'];
+}
+
+/**
+ * Get legacy length guidelines (keeping for backward compatibility)
  */
 function getLengthGuidelines(length) {
   const guidelines = {
