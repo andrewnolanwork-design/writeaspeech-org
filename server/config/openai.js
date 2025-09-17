@@ -420,9 +420,10 @@ function generateEnhancedMockSpeech({ occasion, style, key_points = [], personal
   // Add personal stories with rich detail
   if (personal_stories.length > 0) {
     speech += "Let me paint you a picture with a story that captures exactly who this person is:\n\n";
-    const firstStory = personal_stories[0].replace(/^[•\-\*]\s*/, '').trim();
-    speech += `${firstStory}\n\n`;
-    speech += "That moment perfectly shows the kind of person we're celebrating today.\n\n";
+    const firstStory = personal_stories[0] ? personal_stories[0].replace(/^[•\-\*]\s*/, '').trim() : '';
+    if (firstStory) {
+      speech += `${firstStory} - That's the kind of person we're celebrating today.\n\n`;
+    }
   }
 
   // Style-specific closings
