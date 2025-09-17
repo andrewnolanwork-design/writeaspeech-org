@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { generateSpeech } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import PaymentModal from '../components/payment/PaymentModal';
 import type { SpeechData } from '../api';
 
 // Using SpeechData interface from API
+
+// Define pricing plan types
+type PricingPlan = 'free' | 'premium' | 'subscription';
+
+interface PlanDetails {
+  name: string;
+  price: string;
+  buttonText: string;
+  description: string;
+  limitations?: string[];
+}
 
 const BuilderPage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -25,6 +36,42 @@ const BuilderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  
+  // Pricing plan state
+  const [currentPlan, setCurrentPlan] = useState<PricingPlan>('premium'); // Default to premium
+
+  // Pricing plan configurations
+  const planDetails: Record<PricingPlan, PlanDetails> = {
+    free: {
+      name: 'Free Trial',
+      price: 'Free',
+      buttonText: 'Generate Free Speech',
+      description: 'Create a short speech (300 words max) with watermark',
+      limitations: ['300 words maximum', 'Watermarked output', 'Limited export options']
+    },
+    premium: {
+      name: 'Pay-Per-Speech',
+      price: '$24.99',
+      buttonText: 'Generate My Speech - $24.99',
+      description: 'Complete unlimited-length speech with all features'
+    },
+    subscription: {
+      name: 'Monthly Subscription',
+      price: '$9.99/month',
+      buttonText: 'Generate My Speech - $9.99/month',
+      description: '5 speeches per month with premium features'
+    }
+  };
+
+  // Detect pricing plan from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const planParam = urlParams.get('plan') as PricingPlan;
+    
+    if (planParam && ['free', 'premium', 'subscription'].includes(planParam)) {
+      setCurrentPlan(planParam);
+    }
+  }, []);
 
   const totalSteps = 7; // Increased from 5 to 7 steps
 
@@ -89,7 +136,7 @@ const BuilderPage: React.FC = () => {
   };
 
   const handleGenerateSpeech = async () => {
-    console.log('🎯 handleGenerateSpeech called');
+    console.log('🎯 handleGenerateSpeech called, plan:', currentPlan);
     
     // Validate all required fields are filled
     if (!speechData.occasion || !speechData.style || !speechData.length || !speechData.audience.trim()) {
@@ -97,10 +144,36 @@ const BuilderPage: React.FC = () => {
       return;
     }
     
-    console.log('✅ Validation passed, showing payment modal');
     setError(null);
-    setShowPaymentModal(true);
-    console.log('💳 showPaymentModal set to:', true);
+    
+    // For free plan, generate speech directly without payment
+    if (currentPlan === 'free') {
+      console.log('✅ Free plan - generating speech directly');
+      try {
+        setIsLoading(true);
+        
+        // Generate the speech with free limitations
+        const speechResponse = await generateSpeech({
+          ...speechData,
+          // Add free plan limitations
+          additionalContext: 'FREE_TRIAL_300_WORDS_MAX'
+        });
+        
+        console.log('Free speech generated successfully:', speechResponse.speech);
+        alert(`Free speech generated successfully! Note: This is a watermarked trial version limited to 300 words.`);
+        
+      } catch (error) {
+        console.error('Error generating free speech:', error);
+        setError('Failed to generate speech. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // For paid plans, show payment modal
+      console.log('✅ Paid plan - showing payment modal');
+      setShowPaymentModal(true);
+      console.log('💳 showPaymentModal set to:', true);
+    }
   };
 
   const handlePaymentSuccess = async (speechId: string) => {
@@ -303,6 +376,26 @@ In a real implementation, you would be redirected to view your completed speech.
           <div className="step-content">
             <h2>Review Your Speech Details</h2>
             <p>Everything looks good? Let's create your personalized speech!</p>
+            
+            {/* Pricing Plan Indicator */}
+            <div className={`pricing-plan-indicator ${currentPlan}`}>
+              <div className="plan-header">
+                <h3>📋 Selected Plan: {planDetails[currentPlan].name}</h3>
+                <div className="plan-price">{planDetails[currentPlan].price}</div>
+              </div>
+              <p className="plan-description">{planDetails[currentPlan].description}</p>
+              {planDetails[currentPlan].limitations && (
+                <div className="plan-limitations">
+                  <strong>Note:</strong>
+                  <ul>
+                    {planDetails[currentPlan].limitations!.map((limitation, index) => (
+                      <li key={index}>{limitation}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            
             <div className="review-summary">
               <div className="summary-item">
                 <strong>Occasion:</strong> {speechData.occasion || customOccasion}
@@ -387,7 +480,7 @@ In a real implementation, you would be redirected to view your completed speech.
               onClick={handleGenerateSpeech}
               disabled={isLoading}
             >
-              {isLoading ? 'Processing...' : 'Generate My Speech - $19'}
+              {isLoading ? 'Processing...' : planDetails[currentPlan].buttonText}
             </button>
           )}
         </div>
@@ -398,6 +491,8 @@ In a real implementation, you would be redirected to view your completed speech.
           speechData={speechData}
           userId={currentUser?.uid}
           onSuccess={handlePaymentSuccess}
+          pricingPlan={currentPlan}
+          planDetails={planDetails[currentPlan]}
         />
       </div>
     </div>
