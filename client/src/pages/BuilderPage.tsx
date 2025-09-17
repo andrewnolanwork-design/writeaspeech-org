@@ -78,7 +78,7 @@ const BuilderPage: React.FC = () => {
   const totalSteps = 7; // Increased from 5 to 7 steps
 
   // Function to display generated speech content
-  const displayGeneratedSpeech = (speech: any, plan: PricingPlan) => {
+  const displayGeneratedSpeech = (speech: any) => {
     // Navigate to the speech viewer page
     navigate(`/speech/${speech.id}`);
   };
@@ -170,7 +170,7 @@ const BuilderPage: React.FC = () => {
         console.log('Free speech generated successfully:', speechResponse.speech);
         
         // Show the speech content in a better way
-        displayGeneratedSpeech(speechResponse.speech, 'free');
+        displayGeneratedSpeech(speechResponse.speech);
         
       } catch (error) {
         console.error('Error generating free speech:', error);
@@ -198,7 +198,7 @@ const BuilderPage: React.FC = () => {
       console.log('Speech ID from payment:', speechId); // Use the speechId parameter
       
       // Show the generated speech content
-      displayGeneratedSpeech(speechResponse.speech, currentPlan);
+      displayGeneratedSpeech(speechResponse.speech);
       
     } catch (error: any) {
       console.error('Error generating speech:', error);

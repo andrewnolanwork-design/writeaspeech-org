@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useParams, Link } from 'react-router-dom';
 import { getSpeech } from '../api/speech';
 import type { Speech } from '../api/speech';
 import './SpeechViewerPage.css';
 
 const SpeechViewerPage: React.FC = () => {
   const { speechId } = useParams<{ speechId: string }>();
-  const navigate = useNavigate();
-  const { currentUser } = useAuth();
   
   const [speech, setSpeech] = useState<Speech | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +27,7 @@ const SpeechViewerPage: React.FC = () => {
         // Check if this is a free trial speech (you could add this to the speech data)
         // For now, we'll check if content is short or has certain markers
         const isFree = response.speech.content?.includes('free trial') || 
-                      response.speech.wordCount < 350;
+                      (response.speech.wordCount && response.speech.wordCount < 350);
         setIsFreeTrial(isFree);
         
       } catch (error: any) {
