@@ -60,7 +60,7 @@ const HelpPage: React.FC = () => {
       {
         id: 9,
         question: "How much does writeaspeech.org cost?",
-        answer: "We offer a simple, one-time payment of $19 for complete access to all features. This includes unlimited speech generation, all practice tools, and lifetime access. No monthly subscriptions or hidden fees."
+        answer: "We offer three flexible pricing options: Free Trial (short speeches with watermarks), Pay-Per-Speech ($24.99 for premium full-length speeches), and Monthly Subscription ($9.99/month for 5 speeches monthly). Choose what works best for your needs!"
       },
       {
         id: 10,
@@ -402,8 +402,8 @@ const HelpPage: React.FC = () => {
                   
                   <div className="help-cta-buttons">
                     <Link to="/builder" className="primary-help-cta-button">
-                      <span className="cta-button-text">Create My Speech</span>
-                      <span className="cta-button-price">Only $19</span>
+                      <span className="cta-button-text">Start Free Trial</span>
+                      <span className="cta-button-price">$0 to try</span>
                     </Link>
                     <Link to="/pricing" className="secondary-help-cta-button">
                       <span className="pricing-icon">💰</span>

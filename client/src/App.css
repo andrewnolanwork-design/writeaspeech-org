@@ -2538,6 +2538,293 @@ body {
   transform: scale(1.02);
 }
 
+/* ==============================================
+   THREE-TIER PRICING STYLES
+   ============================================== */
+
+/* Pricing Tiers Container */
+.pricing-tiers {
+  margin: 4rem 0;
+  padding: 2rem 0;
+}
+
+.pricing-tiers-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Individual Tier Cards */
+.pricing-tier-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pricing-tier-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Tier-specific styling */
+.pricing-tier-card.free-tier {
+  border-color: #10b981;
+}
+
+.pricing-tier-card.premium-tier {
+  border-color: #f59e0b;
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(245, 158, 11, 0.15);
+}
+
+.pricing-tier-card.subscription-tier {
+  border-color: #6366f1;
+}
+
+.pricing-tier-card.popular::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  border-radius: 20px;
+  z-index: -1;
+}
+
+/* Tier Headers */
+.tier-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.tier-badge.free {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+}
+
+.tier-badge.premium {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+}
+
+.tier-badge.subscription {
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #3730a3;
+}
+
+.tier-icon {
+  margin: 1rem 0;
+}
+
+.tier-icon .speech-graphic {
+  font-size: 3rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.tier-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0.5rem 0;
+}
+
+.tier-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Tier Pricing */
+.tier-pricing {
+  text-align: center;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 15px;
+}
+
+.tier-pricing .price-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.tier-pricing .currency {
+  font-size: 1.5rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.tier-pricing .amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.tier-pricing .price-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tier-pricing .period {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tier-pricing .savings,
+.tier-pricing .limitations {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.tier-pricing .savings {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.tier-pricing .limitations {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Tier Features */
+.tier-features {
+  flex-grow: 1;
+  margin: 1.5rem 0;
+}
+
+.tier-features .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tier-features .feature-item:last-child {
+  border-bottom: none;
+}
+
+.tier-features .feature-check {
+  font-size: 1.25rem;
+  min-width: 1.5rem;
+}
+
+.tier-features .feature-item.limited {
+  opacity: 0.7;
+}
+
+.tier-features .feature-item.limited .feature-check {
+  color: #f59e0b;
+}
+
+/* Tier CTAs */
+.tier-cta {
+  margin-top: auto;
+  text-align: center;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.cta-button.free {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.cta-button.free:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+}
+
+.cta-button.premium {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+}
+
+.cta-button.premium:hover {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+}
+
+.cta-button.subscription {
+  background: linear-gradient(135deg, #6366f1, #5b21b6);
+  color: white;
+}
+
+.cta-button.subscription:hover {
+  background: linear-gradient(135deg, #5b21b6, #4c1d95);
+  transform: translateY(-2px);
+}
+
+.cta-note {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pricing-tiers-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  .pricing-tier-card.premium-tier {
+    transform: none;
+  }
+  
+  .tier-pricing .amount {
+    font-size: 2.5rem;
+  }
+}
+
 
 .hero-placeholder::before {
   content: '';

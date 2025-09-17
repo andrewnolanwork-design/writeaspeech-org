@@ -13,11 +13,11 @@ const HomePage: React.FC = () => {
             Craft the perfect speech for <span className="highlight">any occasion</span>
           </h1>
           <p className="hero-subtitle">
-            Your personal AI speechwriter creates personalized speeches for just $19
+            Your personal AI speechwriter with flexible pricing for every need
           </p>
           <div className="hero-buttons">
-            <Link to="/builder" className="btn btn-primary">Create My Speech - $19</Link>
-            <a href="#about" className="btn btn-secondary">See How It Works</a>
+            <Link to="/builder" className="btn btn-primary">Try Free • Pay-Per-Speech • Monthly Plans</Link>
+            <a href="#pricing" className="btn btn-secondary">View Pricing</a>
           </div>
         </div>
         <div className="hero-visual">
@@ -147,16 +147,16 @@ const HomePage: React.FC = () => {
           <h2 className="section-title">Ready to Write Your Speech?</h2>
           <div className="contact-content">
             <div className="contact-info">
-              <h3>Simple, One-Time Payment</h3>
-              <p>Get your personalized speech and all practice tools for just <strong>$19</strong>. No subscriptions, no hidden fees.</p>
+              <h3>Flexible Pricing for Every Need</h3>
+              <p>Choose from our <strong>Free Trial</strong>, <strong>Pay-Per-Speech ($24.99)</strong>, or <strong>Monthly Subscription ($9.99/month)</strong> options.</p>
               <div className="contact-details">
-                <p>✅ Complete personalized speech</p>
-                <p>✅ Teleprompter and practice tools</p>
-                <p>✅ Multiple export formats (PDF, text, cue cards)</p>
-                <p>✅ Pacing analysis and audio recording</p>
+                <p>✅ Start with a free trial speech</p>
+                <p>✅ Perfect single speeches for important events</p>
+                <p>✅ Regular speeches with monthly plans</p>
+                <p>✅ All plans include practice tools and export options</p>
               </div>
               <div className="hero-buttons" style={{ marginTop: '2rem' }}>
-                <Link to="/builder" className="btn btn-primary">Start Writing My Speech</Link>
+                <Link to="/pricing" className="btn btn-primary">View All Pricing Options</Link>
               </div>
             </div>
           </div>

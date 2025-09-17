@@ -159,7 +159,7 @@ const AboutPage: React.FC = () => {
                     <p>We developed an AI-powered platform that democratizes professional speech writing, making it accessible, affordable, and deeply personal.</p>
                     <ul className="timeline-points">
                       <li>AI that learns your unique voice and style</li>
-                      <li>Personalized speeches for just $19</li>
+                      <li>Flexible pricing from free trials to premium speeches</li>
                       <li>Complete practice toolkit included</li>
                       <li>Instant generation with unlimited revisions</li>
                     </ul>
@@ -400,8 +400,8 @@ const AboutPage: React.FC = () => {
 
                   <div className="about-cta-buttons">
                     <Link to="/builder" className="primary-about-cta-button">
-                      <span className="cta-button-text">Create Your First Speech</span>
-                      <span className="cta-button-price">Only $19</span>
+                      <span className="cta-button-text">Start Free Trial</span>
+                      <span className="cta-button-price">$0 to try</span>
                     </Link>
                     <Link to="/pricing" className="secondary-about-cta-button">
                       <span className="pricing-icon">💰</span>

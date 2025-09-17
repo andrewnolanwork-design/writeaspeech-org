@@ -12,15 +12,15 @@ const PricingPage: React.FC = () => {
     <>
       {/* SEO Meta Tags */}
       <head>
-        <title>Pricing - writeaspeech.org | AI Speech Writing for $19</title>
-        <meta name="description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features. No subscriptions, no hidden fees. 30-day money-back guarantee." />
-        <meta name="keywords" content="speech writing, AI speechwriter, wedding speech, presentation writing, public speaking, speech generator, affordable speech writing" />
-        <meta property="og:title" content="Pricing - writeaspeech.org | AI Speech Writing for $19" />
-        <meta property="og:description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features." />
+        <title>Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans</title>
+        <meta name="description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99. Choose the perfect plan for your needs." />
+        <meta name="keywords" content="speech writing pricing, AI speechwriter plans, free trial speech, pay per speech, monthly speech subscription" />
+        <meta property="og:title" content="Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans" />
+        <meta property="og:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Pricing - writeaspeech.org | AI Speech Writing for $19" />
-        <meta name="twitter:description" content="Create perfect speeches with AI for just $19. One-time payment, lifetime access to all features." />
+        <meta name="twitter:title" content="Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans" />
+        <meta name="twitter:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99." />
         <link rel="canonical" href="https://writeaspeech.org/pricing" />
       </head>
 
@@ -29,12 +29,12 @@ const PricingPage: React.FC = () => {
           {/* Hero Section */}
           <section className={`pricing-hero ${isVisible ? 'animate-in' : ''}`}>
             <div className="pricing-hero-content">
-              <span className="pricing-badge">💰 Simple Pricing</span>
+              <span className="pricing-badge">💰 Flexible Pricing</span>
               <h1 className="pricing-hero-title">
-                One Price. <span className="highlight-text">Everything Included.</span>
+                Choose Your <span className="highlight-text">Perfect Plan</span>
               </h1>
               <p className="pricing-hero-subtitle">
-                No subscriptions, no tiers, no hidden fees. Just one simple payment for lifetime access to all features.
+                From free trials to premium features - we have the right option for every speaker and every budget.
               </p>
               <div className="hero-stats">
                 <div className="stat-item">
@@ -46,113 +46,196 @@ const PricingPage: React.FC = () => {
                   <span className="stat-label">Satisfaction Rate</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-number">30 Days</span>
-                  <span className="stat-label">Money-Back Guarantee</span>
+                  <span className="stat-number">3 Plans</span>
+                  <span className="stat-label">Perfect Options</span>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Main Pricing Card */}
-          <section className={`pricing-main ${isVisible ? 'animate-in-delay' : ''}`}>
-            <div className="pricing-card-container">
-              <div className="pricing-card-modern">
-                <div className="pricing-card-header">
-                  <div className="popular-badge">
+          {/* Three-Tier Pricing Section */}
+          <section className={`pricing-tiers ${isVisible ? 'animate-in-delay' : ''}`}>
+            <div className="pricing-tiers-container">
+              
+              {/* Tier 1: Free Trial */}
+              <div className="pricing-tier-card free-tier">
+                <div className="tier-header">
+                  <div className="tier-badge free">
+                    <span className="badge-icon">🎁</span>
+                    <span>Perfect to Try</span>
+                  </div>
+                  <div className="tier-icon">
+                    <div className="speech-graphic">✨</div>
+                  </div>
+                  <h2 className="tier-title">Free Trial</h2>
+                  <p className="tier-subtitle">Experience the magic with no commitment</p>
+                </div>
+
+                <div className="tier-pricing">
+                  <div className="price-display">
+                    <span className="currency">$</span>
+                    <span className="amount">0</span>
+                    <div className="price-details">
+                      <span className="period">completely free</span>
+                      <span className="limitations">300 words max, watermark</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tier-features">
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Short speech generation (under 300 words)</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>All 4 speech styles available</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Basic teleprompter access</span>
+                  </div>
+                  <div className="feature-item limited">
+                    <span className="feature-check">⚠️</span>
+                    <span>Watermarked output</span>
+                  </div>
+                  <div className="feature-item limited">
+                    <span className="feature-check">⚠️</span>
+                    <span>Limited export options</span>
+                  </div>
+                </div>
+
+                <div className="tier-cta">
+                  <Link to="/builder?plan=free" className="cta-button free">
+                    <span className="cta-text">Start Free Trial</span>
+                    <span className="cta-arrow">→</span>
+                  </Link>
+                  <p className="cta-note">No credit card required</p>
+                </div>
+              </div>
+
+              {/* Tier 2: Pay-Per-Speech */}
+              <div className="pricing-tier-card premium-tier popular">
+                <div className="tier-header">
+                  <div className="tier-badge premium">
                     <span className="badge-icon">⭐</span>
                     <span>Most Popular</span>
                   </div>
-                  <div className="pricing-icon">
-                    <div className="speech-graphic">🎤</div>
+                  <div className="tier-icon">
+                    <div className="speech-graphic">💍</div>
                   </div>
-                  <h2 className="package-title">Complete Speech Package</h2>
-                  <p className="package-subtitle">Everything you need for the perfect speech</p>
+                  <h2 className="tier-title">Pay-Per-Speech</h2>
+                  <p className="tier-subtitle">Perfect for that one important moment</p>
                 </div>
 
-                <div className="pricing-amount">
+                <div className="tier-pricing">
                   <div className="price-display">
                     <span className="currency">$</span>
-                    <span className="amount">19</span>
+                    <span className="amount">24.99</span>
                     <div className="price-details">
-                      <span className="period">one-time payment</span>
-                      <span className="savings">Save $480+ vs traditional writers</span>
+                      <span className="period">per speech</span>
+                      <span className="savings">Save $475+ vs professional writers</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="features-grid">
-                  <div className="feature-category">
-                    <h4 className="category-title">🤖 AI-Powered Writing</h4>
-                    <div className="feature-list">
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Personalized speech generation</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>4 unique styles (witty, formal, heartfelt, inspiring)</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Unlimited revisions & editing</span>
-                      </div>
-                    </div>
+                <div className="tier-features">
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Complete unlimited-length speech</span>
                   </div>
-
-                  <div className="feature-category">
-                    <h4 className="category-title">🎯 Practice Tools</h4>
-                    <div className="feature-list">
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Interactive teleprompter</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Pacing analysis & timing tools</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Audio recording & playback</span>
-                      </div>
-                    </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>All 4 speech styles + tone adjustment</span>
                   </div>
-
-                  <div className="feature-category">
-                    <h4 className="category-title">📄 Export & Share</h4>
-                    <div className="feature-list">
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>PDF, text & cue card formats</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Print-ready layouts</span>
-                      </div>
-                      <div className="feature-item">
-                        <span className="feature-check">✓</span>
-                        <span>Lifetime access to all content</span>
-                      </div>
-                    </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Unlimited revisions</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Full practice toolkit</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>All export formats (PDF, text, cue cards)</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Priority support</span>
                   </div>
                 </div>
 
-                <div className="pricing-cta-section">
-                  <Link to="/builder" className="cta-button-modern">
-                    <span className="cta-text">Start Creating My Speech</span>
+                <div className="tier-cta">
+                  <Link to="/builder?plan=premium" className="cta-button premium">
+                    <span className="cta-text">Perfect My Speech</span>
                     <span className="cta-arrow">→</span>
                   </Link>
-                  <div className="guarantee-badge">
-                    <span className="guarantee-icon">🛡️</span>
-                    <span className="guarantee-text">30-day money-back guarantee</span>
+                  <p className="cta-note">30-day money-back guarantee</p>
+                </div>
+              </div>
+
+              {/* Tier 3: Monthly Subscription */}
+              <div className="pricing-tier-card subscription-tier">
+                <div className="tier-header">
+                  <div className="tier-badge subscription">
+                    <span className="badge-icon">💼</span>
+                    <span>Best Value</span>
                   </div>
-                  <div className="payment-security">
-                    <span className="security-text">Secure payment by</span>
-                    <div className="payment-icons">
-                      <span className="payment-brand">Stripe</span>
+                  <div className="tier-icon">
+                    <div className="speech-graphic">🚀</div>
+                  </div>
+                  <h2 className="tier-title">Monthly Subscription</h2>
+                  <p className="tier-subtitle">For regular speakers who need more</p>
+                </div>
+
+                <div className="tier-pricing">
+                  <div className="price-display">
+                    <span className="currency">$</span>
+                    <span className="amount">9.99</span>
+                    <div className="price-details">
+                      <span className="period">per month</span>
+                      <span className="savings">Up to 5 speeches monthly</span>
                     </div>
                   </div>
                 </div>
+
+                <div className="tier-features">
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>5 complete speeches per month</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>All premium features included</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Speech library & saved templates</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Advanced practice analytics</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Priority customer support</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span>Cancel anytime</span>
+                  </div>
+                </div>
+
+                <div className="tier-cta">
+                  <Link to="/builder?plan=subscription" className="cta-button subscription">
+                    <span className="cta-text">Start Subscription</span>
+                    <span className="cta-arrow">→</span>
+                  </Link>
+                  <p className="cta-note">Cancel anytime, 30-day guarantee</p>
+                </div>
               </div>
+
             </div>
           </section>
 
@@ -206,7 +289,7 @@ const PricingPage: React.FC = () => {
                             <span className="logo-icon">🎤</span>
                             <span className="brand-name">writeaspeech.org</span>
                           </div>
-                          <div className="best-value-badge">Best Value</div>
+                          <div className="best-value-badge">3 Great Options</div>
                         </div>
                       </th>
                       <th className="traditional-column">
@@ -231,8 +314,8 @@ const PricingPage: React.FC = () => {
                       </td>
                       <td className="writeaspeech-cell highlighted">
                         <div className="cell-content winner">
-                          <span className="value">$19 one-time</span>
-                          <span className="badge">Best Deal</span>
+                          <span className="value">Free to $24.99</span>
+                          <span className="badge">Flexible Options</span>
                         </div>
                       </td>
                       <td className="traditional-cell">
@@ -366,7 +449,7 @@ const PricingPage: React.FC = () => {
                 <h3>Ready to experience the difference?</h3>
                 <p>Join thousands who chose the smarter way to write speeches</p>
                 <Link to="/builder" className="comparison-cta-button">
-                  Get Started for $19 →
+                  Start Free Trial →
                 </Link>
               </div>
             </div>
@@ -381,14 +464,14 @@ const PricingPage: React.FC = () => {
             
             <div className="faq-grid">
               <div className="faq-item-modern">
-                <div className="faq-icon">💳</div>
-                <h3 className="faq-question">Is this really a one-time payment?</h3>
-                <p className="faq-answer">Yes! You pay $19 once and get lifetime access to all features. No monthly subscriptions or recurring charges.</p>
+                <div className="faq-icon">🎁</div>
+                <h3 className="faq-question">What's included in the free trial?</h3>
+                <p className="faq-answer">You can create one short speech (under 300 words) with all our speech styles. Perfect to experience our AI quality before upgrading!</p>
               </div>
               <div className="faq-item-modern">
-                <div className="faq-icon">🔄</div>
-                <h3 className="faq-question">Can I create multiple speeches?</h3>
-                <p className="faq-answer">Absolutely! Your one-time payment gives you access to create unlimited speeches for any occasion, anytime.</p>
+                <div className="faq-icon">💍</div>
+                <h3 className="faq-question">When should I choose pay-per-speech?</h3>
+                <p className="faq-answer">Perfect for important one-time events like weddings, graduations, or eulogies where you need a premium, full-length speech with unlimited revisions.</p>
               </div>
               <div className="faq-item-modern">
                 <div className="faq-icon">🛡️</div>
@@ -406,9 +489,9 @@ const PricingPage: React.FC = () => {
                 <p className="faq-answer">Instantly! Our AI generates your personalized speech in seconds. You can start practicing and refining immediately.</p>
               </div>
               <div className="faq-item-modern">
-                <div className="faq-icon">🎯</div>
-                <h3 className="faq-question">What if I need help or support?</h3>
-                <p className="faq-answer">We provide unlimited revisions and support. Our team is here to ensure you get the perfect speech for your occasion.</p>
+                <div className="faq-icon">💼</div>
+                <h3 className="faq-question">Who should choose the monthly subscription?</h3>
+                <p className="faq-answer">Ideal for professionals, students, or anyone who regularly gives speeches. Get 5 complete speeches monthly - perfect for sales professionals, managers, or frequent speakers.</p>
               </div>
             </div>
           </section>
@@ -426,9 +509,9 @@ const PricingPage: React.FC = () => {
                   </p>
                   
                   <div className="cta-buttons-modern">
-                    <Link to="/builder" className="primary-cta-button">
-                      <span className="cta-button-text">Start Creating My Speech</span>
-                      <span className="cta-button-price">Only $19</span>
+                    <Link to="/builder?plan=free" className="primary-cta-button">
+                      <span className="cta-button-text">Start Free Trial</span>
+                      <span className="cta-button-price">$0 to try</span>
                     </Link>
                     <Link to="/help" className="secondary-cta-button">
                       <span className="help-icon">💬</span>
