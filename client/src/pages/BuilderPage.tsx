@@ -75,6 +75,30 @@ const BuilderPage: React.FC = () => {
 
   const totalSteps = 7; // Increased from 5 to 7 steps
 
+  // Function to display generated speech content
+  const displayGeneratedSpeech = (speech: any, plan: PricingPlan) => {
+    // Create a detailed modal or page showing the speech content
+    const speechContent = `
+📝 **Your ${planDetails[plan].name} Speech is Ready!**
+
+**Title:** ${speech.title || 'Your Speech'}
+**Word Count:** ${speech.wordCount} words
+**Duration:** ${speech.estimatedDuration}
+**Created:** ${new Date().toLocaleDateString()}
+
+**Your Speech Content:**
+${speech.content}
+
+${plan === 'free' ? '⚠️ **Note:** This is a free trial version with watermark.' : '✅ **Premium Speech:** Full access with all features included.'}
+    `;
+
+    // For now, use a styled alert - in production this would be a modal or new page
+    alert(speechContent);
+    
+    // TODO: In production, redirect to a speech viewer page or show in a modal
+    // Example: navigate(`/speech/${speech.id}`);
+  };
+
   const isStepValid = () => {
     switch (currentStep) {
       case 1: return speechData.occasion !== '' || customOccasion.trim() !== '';
@@ -160,7 +184,9 @@ const BuilderPage: React.FC = () => {
         });
         
         console.log('Free speech generated successfully:', speechResponse.speech);
-        alert(`Free speech generated successfully! Note: This is a watermarked trial version limited to 300 words.`);
+        
+        // Show the speech content in a better way
+        displayGeneratedSpeech(speechResponse.speech, 'free');
         
       } catch (error) {
         console.error('Error generating free speech:', error);
@@ -187,15 +213,8 @@ const BuilderPage: React.FC = () => {
       console.log('Speech generated successfully:', speechResponse.speech);
       console.log('Speech ID from payment:', speechId); // Use the speechId parameter
       
-      // Show success message
-      alert(`Payment successful! Speech generated successfully! 
-      
-Title: ${speechResponse.speech.title || 'Your Speech'}
-Word Count: ${speechResponse.speech.wordCount}
-Duration: ${speechResponse.speech.estimatedDuration}
-Speech ID: ${speechId}
-
-In a real implementation, you would be redirected to view your completed speech.`);
+      // Show the generated speech content
+      displayGeneratedSpeech(speechResponse.speech, currentPlan);
       
     } catch (error: any) {
       console.error('Error generating speech:', error);

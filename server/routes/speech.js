@@ -250,51 +250,102 @@ router.delete('/:speechId', async (req, res) => {
 });
 
 /**
- * Helper function to generate mock speech content
+ * Helper function to generate realistic mock speech content
  */
 function generateMockSpeech({ occasion, style, audience, key_points = [], personal_stories = [] }) {
-  const intros = {
-    Wedding: "Good evening, everyone! For those who don't know me, I'm",
-    Birthday: "Thank you all for being here to celebrate this special day. I'm",
-    Retirement: "We've gathered here today to honor someone very special. I'm",
-    'Business Event': "Good evening, colleagues and friends. I'm",
-    Graduation: "Distinguished guests, proud families, and graduates, I'm"
+  // Generate personalized, realistic speeches based on input
+  let speech = "";
+  
+  // Style-specific openings
+  const openings = {
+    'Heartfelt': {
+      'Wedding': "Good evening, everyone. You know, when I think about love, I think about the kind of connection that makes you believe in magic again...",
+      'Birthday': "Looking around this room tonight, I'm reminded of how one person can touch so many lives...",
+      'Retirement': "Thirty-five years. That's not just a number—it's a lifetime of dedication, friendship, and moments that shaped all of us...",
+      'Business Event': "I've been thinking about what it means to make a real difference, and that brings me to why we're here tonight..."
+    },
+    'Witty': {
+      'Wedding': "So here we are, gathered to witness two people promise to put up with each other's weird habits for the rest of their lives...",
+      'Birthday': "They say age is just a number. Well, tonight that number is getting pretty impressive...",
+      'Retirement': "After decades of pretending to work while actually planning your retirement, the day has finally come...",
+      'Business Event': "I was going to start with a joke about our quarterly numbers, but then I realized our quarterly numbers ARE the joke..."
+    },
+    'Formal': {
+      'Wedding': "Distinguished guests, family, and friends, we gather today to celebrate the union of two remarkable individuals...",
+      'Birthday': "Esteemed friends and family, we are here to honor someone who has enriched all our lives...",
+      'Retirement': "Respected colleagues and friends, today we recognize a career marked by excellence and dedication...",
+      'Business Event': "Honored guests and colleagues, I stand before you to address matters of great importance to our organization..."
+    },
+    'Inspiring': {
+      'Wedding': "Love doesn't just happen to us—it transforms us, challenges us, and shows us what we're truly capable of...",
+      'Birthday': "Every birthday is a celebration of possibility, of dreams realized and adventures yet to come...",
+      'Retirement': "What we call an ending is really a beginning—the start of a new chapter filled with unlimited potential...",
+      'Business Event': "Excellence isn't an accident. It's the result of vision, determination, and the courage to dream bigger..."
+    }
   };
 
-  const styles = {
-    Heartfelt: "and I'm honored to speak from the heart today.",
-    Witty: "and I promise to keep this entertaining!",
-    Formal: "and I'm privileged to address you this evening.",
-    Inspiring: "and I'm excited to share some thoughts that I hope will inspire you."
-  };
+  // Start with opening
+  speech += (openings[style] && openings[style][occasion]) || openings['Heartfelt']['Business Event'];
+  speech += '\n\n';
 
-  const intro = `${intros[occasion] || intros['Business Event']} John, ${styles[style] || styles['Formal']}`;
-  
-  let content = intro + '\n\n';
-  
-  // Add key points
+  // Add key points naturally integrated
   if (key_points.length > 0) {
-    content += key_points.map(point => `• ${point}`).join('\n') + '\n\n';
+    if (style === 'Witty') {
+      speech += "Now, I could stand here and tell you all the obvious things, but instead let me share what really matters:\n\n";
+    } else if (style === 'Heartfelt') {
+      speech += "I want to share some things that have been on my heart:\n\n";
+    } else {
+      speech += "There are several important points I'd like to address:\n\n";
+    }
+    
+    key_points.forEach((point, index) => {
+      speech += `${index + 1}. ${point} - This reminds me of the countless times I've witnessed this quality firsthand.\n\n`;
+    });
   }
-  
-  // Add personal stories
+
+  // Add personal stories with rich detail
   if (personal_stories.length > 0) {
-    content += "Let me share a story that perfectly captures who this person is:\n\n";
-    content += personal_stories[0] + '\n\n';
+    speech += "Let me paint you a picture with a story that captures exactly who this person is:\n\n";
+    speech += `${personal_stories[0]}\n\n`;
+    speech += "That moment perfectly shows the kind of person we're celebrating today.\n\n";
+    
+    if (personal_stories.length > 1) {
+      speech += `And then there's this: ${personal_stories[1]}\n\n`;
+      speech += "These aren't just stories—they're glimpses into a character that inspires all of us.\n\n";
+    }
   }
-  
-  // Add conclusion based on occasion
-  const conclusions = {
-    Wedding: "So let's raise our glasses to the happy couple. May your love story continue to inspire us all!",
-    Birthday: "Here's to another year of wonderful memories and many more to come!",
-    Retirement: "Thank you for your years of dedication, and enjoy this well-deserved new chapter!",
-    'Business Event': "Thank you for your attention, and let's continue to work together toward our shared goals.",
-    Graduation: "Congratulations to all graduates - the future is yours to shape!"
+
+  // Style-specific closings
+  const closings = {
+    'Heartfelt': {
+      'Wedding': "So as you begin this incredible journey together, remember that love isn't just about finding someone you can live with—it's about finding someone you can't imagine living without. Here's to a lifetime of love, laughter, and beautiful moments. Cheers!",
+      'Birthday': "As we celebrate another year of your amazing life, I hope you know how grateful we all are to know you. Here's to many more years of joy, adventure, and dreams coming true!",
+      'Retirement': "Your legacy isn't just in the work you've done—it's in the lives you've touched, the people you've mentored, and the example you've set. Enjoy this new chapter!",
+      'Business Event': "Thank you for reminding us what excellence looks like and for inspiring us to reach higher. Together, we'll continue building something remarkable."
+    },
+    'Witty': {
+      'Wedding': "Marriage is like a good wine—it gets better with age, but sometimes it gives you a headache the next morning. Here's to a lifetime of good vintages and minimal hangovers!",
+      'Birthday': "They say the secret to staying young is to live honestly, eat slowly, and lie about your age. You've mastered at least one of those! Happy birthday!",
+      'Retirement': "Retirement: where every day is Saturday and every night is Friday! You've earned every single one of those Saturdays.",
+      'Business Event': "In closing, remember: we may not have all the answers, but at least we have good coffee and an open bar tonight!"
+    },
+    'Formal': {
+      'Wedding': "May your union be blessed with happiness, prosperity, and enduring love. Congratulations to the happy couple.",
+      'Birthday': "We extend our warmest wishes for continued health, happiness, and success in the year ahead.",
+      'Retirement': "We wish you a fulfilling and joyous retirement, knowing that your contributions will long be remembered and appreciated.",
+      'Business Event': "Thank you for your attention, and I look forward to our continued collaboration and success."
+    },
+    'Inspiring': {
+      'Wedding': "Your love story is just beginning, and I can't wait to see how you'll inspire others with your journey. Dream big, love deeply, and never stop believing in the magic you create together!",
+      'Birthday': "Another year means another chance to make your mark on this world. I know you'll make it count. Here's to the amazing adventures ahead!",
+      'Retirement': "This isn't goodbye—it's 'see you on the next adventure.' The best chapters of your story are still being written!",
+      'Business Event': "Let's not just aim for success—let's aim to make a difference. Together, we can achieve something truly extraordinary."
+    }
   };
-  
-  content += conclusions[occasion] || conclusions['Business Event'];
-  
-  return content;
+
+  speech += (closings[style] && closings[style][occasion]) || closings['Heartfelt']['Business Event'];
+
+  return speech;
 }
 
 /**
