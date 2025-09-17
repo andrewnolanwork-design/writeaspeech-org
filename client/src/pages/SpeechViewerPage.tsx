@@ -26,8 +26,8 @@ const SpeechViewerPage: React.FC = () => {
         
         // Check if this is a free trial speech (you could add this to the speech data)
         // For now, we'll check if content is short or has certain markers
-        const isFree = response.speech.content?.includes('free trial') || 
-                      (response.speech.wordCount && response.speech.wordCount < 350);
+        const isFree = !!(response.speech.content?.includes('free trial') || 
+                         (response.speech.wordCount && response.speech.wordCount < 350));
         setIsFreeTrial(isFree);
         
       } catch (error: any) {
