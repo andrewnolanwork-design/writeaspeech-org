@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
           </p>
           <div className="hero-buttons">
             <Link to="/builder" className="btn btn-primary">Try Free • Pay-Per-Speech • Monthly Plans</Link>
-            <a href="#pricing" className="btn btn-secondary">View Pricing</a>
+            <Link to="/pricing" className="btn btn-secondary">View Pricing</Link>
           </div>
         </div>
         <div className="hero-visual">
