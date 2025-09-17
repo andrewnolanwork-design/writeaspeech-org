@@ -215,7 +215,7 @@ function getHumanWritingTechniques(style, occasion) {
     'Birthday': [
       'Share specific quirks or habits that make this person unique',
       'Include funny stories with actual dialogue',
-      'Reference how they've impacted your life personally',
+      'Reference how they have impacted your life personally',
       'Use age-appropriate humor that celebrates, not roasts'
     ],
     'Retirement': [
@@ -241,28 +241,28 @@ function getHumanWritingTechniques(style, occasion) {
 function getConversationalElements(style) {
   const elements = {
     'Heartfelt': [
-      'Use natural pauses: "And here\'s the thing..."',
-      'Include vulnerable admissions: "I\'ll be honest with you..."',
+      'Use natural pauses: "And here is the thing..."',
+      'Include vulnerable admissions: "I will be honest with you..."',
       'Add emotional connectors: "You know what gets me?"',
       'Use inclusive language: "We all know that feeling when..."'
     ],
     'Witty': [
       'Build anticipation: "So picture this..."',
       'Use timing devices: "Now, I should mention..."',
-      'Include audience acknowledgment: "You\'re laughing, but..."',
-      'Add playful asides: "Don\'t tell them I said this, but..."'
+      'Include audience acknowledgment: "You are laughing, but..."',
+      'Add playful asides: "Do not tell them I said this, but..."'
     ],
     'Formal': [
       'Use respectful transitions: "What strikes me most is..."',
-      'Include thoughtful observations: "I\'ve come to realize..."',
+      'Include thoughtful observations: "I have come to realize..."',
       'Add appreciative language: "What I admire about..."',
-      'Use unifying phrases: "We\'re all here because..."'
+      'Use unifying phrases: "We are all here because..."'
     ],
     'Inspiring': [
-      'Build momentum: "Here\'s what\'s possible..."',
+      'Build momentum: "Here is what is possible..."',
       'Use collective vision: "Imagine if we all..."',
       'Include action phrases: "Starting today, we can..."',
-      'Add energy builders: "And that\'s just the beginning..."'
+      'Add energy builders: "And that is just the beginning..."'
     ]
   };
   
@@ -274,7 +274,7 @@ function getConversationalElements(style) {
  */
 function getEmotionalTone(style, occasion) {
   const tones = {
-    'Wedding_Heartfelt': 'Start with love and gratitude, build through shared memories, peak at the couple\'s future, end with celebration and blessing',
+    'Wedding_Heartfelt': 'Start with love and gratitude, build through shared memories, peak at the couple future, end with celebration and blessing',
     'Birthday_Witty': 'Open with playful teasing, build through funny stories, celebrate their uniqueness, end with genuine appreciation',
     'Retirement_Inspiring': 'Begin with respect and accomplishment, journey through their impact, celebrate their legacy, end with excitement for their future',
     'Business_Formal': 'Start with professional respect, build through shared achievements, acknowledge challenges overcome, end with future optimism'
@@ -339,17 +339,17 @@ function getWordCount(length) {
 function generateMockSpeechFromPrompt(prompt) {
   return `Good evening, everyone!
 
-Thank you all for being here today. This is truly a special occasion, and I'm honored to speak to you all.
+Thank you all for being here today. This is truly a special occasion, and I am honored to speak to you all.
 
-I want to share a few thoughts that come from the heart. We're gathered here not just to celebrate, but to recognize something truly meaningful.
+I want to share a few thoughts that come from the heart. We are gathered here not just to celebrate, but to recognize something truly meaningful.
 
 Let me tell you a story that perfectly captures the essence of this moment...
 
 [This is a mock speech generated for development purposes. In production, this would be replaced with actual AI-generated content based on your specific requirements.]
 
-As we look to the future, I'm filled with optimism and excitement for what lies ahead.
+As we look to the future, I am filled with optimism and excitement for what lies ahead.
 
-Thank you for your attention, and let's continue to celebrate this wonderful occasion together!`;
+Thank you for your attention, and let us continue to celebrate this wonderful occasion together!`;
 }
 
 module.exports = {
