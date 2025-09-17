@@ -334,22 +334,132 @@ function getWordCount(length) {
 }
 
 /**
- * Generate a mock speech from a prompt (for development)
+ * Generate a realistic mock speech from a prompt (for development)
  */
 function generateMockSpeechFromPrompt(prompt) {
-  return `Good evening, everyone!
+  // Extract speech parameters from the prompt
+  const occasionMatch = prompt.match(/occasion.*?:\s*([^\n]+)/i);
+  const styleMatch = prompt.match(/style.*?:\s*([^\n]+)/i);
+  const keyPointsMatch = prompt.match(/key points.*?:\s*(.*?)(?=personal stories|$)/si);
+  const storiesMatch = prompt.match(/personal stories.*?:\s*(.*?)(?=\n\n|$)/si);
+  
+  const occasion = occasionMatch ? occasionMatch[1].trim() : 'Special Event';
+  const style = styleMatch ? styleMatch[1].trim() : 'Heartfelt';
+  const keyPoints = keyPointsMatch ? keyPointsMatch[1].split('\n').filter(p => p.trim()) : [];
+  const stories = storiesMatch ? storiesMatch[1].split('\n').filter(s => s.trim()) : [];
+  
+  // Use the enhanced mock speech generator
+  return generateEnhancedMockSpeech({ 
+    occasion, 
+    style, 
+    key_points: keyPoints, 
+    personal_stories: stories 
+  });
+}
 
-Thank you all for being here today. This is truly a special occasion, and I am honored to speak to you all.
+/**
+ * Enhanced mock speech generator with realistic content
+ */
+function generateEnhancedMockSpeech({ occasion, style, key_points = [], personal_stories = [] }) {
+  let speech = "";
+  
+  // Style-specific openings
+  const openings = {
+    'Heartfelt': {
+      'Wedding': "Good evening, everyone. You know, when I think about love, I think about the kind of connection that makes you believe in magic again...",
+      'Birthday': "Looking around this room tonight, I'm reminded of how one person can touch so many lives...",
+      'Retirement': "Thirty-five years. That's not just a number—it's a lifetime of dedication, friendship, and moments that shaped all of us...",
+      'Business Event': "I've been thinking about what it means to make a real difference, and that brings me to why we're here tonight...",
+      'Special Event': "There are moments in life that remind us what truly matters, and tonight is one of those moments..."
+    },
+    'Witty': {
+      'Wedding': "So here we are, gathered to witness two people promise to put up with each other's weird habits for the rest of their lives...",
+      'Birthday': "They say age is just a number. Well, tonight that number is getting pretty impressive...",
+      'Retirement': "After decades of pretending to work while actually planning your retirement, the day has finally come...",
+      'Business Event': "I was going to start with a joke about our quarterly numbers, but then I realized our quarterly numbers ARE the joke...",
+      'Special Event': "I've been asked to say a few words, which is dangerous because I have a lot of words and very little filter..."
+    },
+    'Formal': {
+      'Wedding': "Distinguished guests, family, and friends, we gather today to celebrate the union of two remarkable individuals...",
+      'Birthday': "Esteemed friends and family, we are here to honor someone who has enriched all our lives...",
+      'Retirement': "Respected colleagues and friends, today we recognize a career marked by excellence and dedication...",
+      'Business Event': "Honored guests and colleagues, I stand before you to address matters of great importance to our organization...",
+      'Special Event': "Distinguished guests, it is my honor to address you on this significant occasion..."
+    },
+    'Inspiring': {
+      'Wedding': "Love doesn't just happen to us—it transforms us, challenges us, and shows us what we're truly capable of...",
+      'Birthday': "Every birthday is a celebration of possibility, of dreams realized and adventures yet to come...",
+      'Retirement': "What we call an ending is really a beginning—the start of a new chapter filled with unlimited potential...",
+      'Business Event': "Excellence isn't an accident. It's the result of vision, determination, and the courage to dream bigger...",
+      'Special Event': "Today we celebrate not just an event, but the power of human potential and the courage to pursue our dreams..."
+    }
+  };
 
-I want to share a few thoughts that come from the heart. We are gathered here not just to celebrate, but to recognize something truly meaningful.
+  // Start with opening
+  const styleKey = Object.keys(openings).find(s => s.toLowerCase() === style.toLowerCase()) || 'Heartfelt';
+  const occasionKey = Object.keys(openings[styleKey]).find(o => o.toLowerCase() === occasion.toLowerCase()) || 'Special Event';
+  speech += openings[styleKey][occasionKey];
+  speech += '\n\n';
 
-Let me tell you a story that perfectly captures the essence of this moment...
+  // Add key points naturally integrated
+  if (key_points.length > 0) {
+    if (styleKey === 'Witty') {
+      speech += "Now, I could stand here and tell you all the obvious things, but instead let me share what really matters:\n\n";
+    } else if (styleKey === 'Heartfelt') {
+      speech += "I want to share some things that have been on my heart:\n\n";
+    } else {
+      speech += "There are several important points I'd like to address:\n\n";
+    }
+    
+    key_points.forEach((point, index) => {
+      const cleanPoint = point.replace(/^[•\-\*]\s*/, '').trim();
+      speech += `${cleanPoint} - This captures something essential about who we're celebrating today.\n\n`;
+    });
+  }
 
-[This is a mock speech generated for development purposes. In production, this would be replaced with actual AI-generated content based on your specific requirements.]
+  // Add personal stories with rich detail
+  if (personal_stories.length > 0) {
+    speech += "Let me paint you a picture with a story that captures exactly who this person is:\n\n";
+    const firstStory = personal_stories[0].replace(/^[•\-\*]\s*/, '').trim();
+    speech += `${firstStory}\n\n`;
+    speech += "That moment perfectly shows the kind of person we're celebrating today.\n\n";
+  }
 
-As we look to the future, I am filled with optimism and excitement for what lies ahead.
+  // Style-specific closings
+  const closings = {
+    'Heartfelt': {
+      'Wedding': "So as you begin this incredible journey together, remember that love isn't just about finding someone you can live with—it's about finding someone you can't imagine living without. Here's to a lifetime of love, laughter, and beautiful moments. Cheers!",
+      'Birthday': "As we celebrate another year of your amazing life, I hope you know how grateful we all are to know you. Here's to many more years of joy, adventure, and dreams coming true!",
+      'Retirement': "Your legacy isn't just in the work you've done—it's in the lives you've touched, the people you've mentored, and the example you've set. Enjoy this new chapter!",
+      'Business Event': "Thank you for reminding us what excellence looks like and for inspiring us to reach higher. Together, we'll continue building something remarkable.",
+      'Special Event': "Thank you for being part of this special moment. May it be the beginning of something wonderful."
+    },
+    'Witty': {
+      'Wedding': "Marriage is like a good wine—it gets better with age, but sometimes it gives you a headache the next morning. Here's to a lifetime of good vintages and minimal hangovers!",
+      'Birthday': "They say the secret to staying young is to live honestly, eat slowly, and lie about your age. You've mastered at least one of those! Happy birthday!",
+      'Retirement': "Retirement: where every day is Saturday and every night is Friday! You've earned every single one of those Saturdays.",
+      'Business Event': "In closing, remember: we may not have all the answers, but at least we have good coffee and an open bar tonight!",
+      'Special Event': "And remember, life is too important to be taken seriously all the time. Thank you and good night!"
+    },
+    'Formal': {
+      'Wedding': "May your union be blessed with happiness, prosperity, and enduring love. Congratulations to the happy couple.",
+      'Birthday': "We extend our warmest wishes for continued health, happiness, and success in the year ahead.",
+      'Retirement': "We wish you a fulfilling and joyous retirement, knowing that your contributions will long be remembered and appreciated.",
+      'Business Event': "Thank you for your attention, and I look forward to our continued collaboration and success.",
+      'Special Event': "Thank you for your attention, and may this occasion mark the beginning of continued success and happiness."
+    },
+    'Inspiring': {
+      'Wedding': "Your love story is just beginning, and I can't wait to see how you'll inspire others with your journey. Dream big, love deeply, and never stop believing in the magic you create together!",
+      'Birthday': "Another year means another chance to make your mark on this world. I know you'll make it count. Here's to the amazing adventures ahead!",
+      'Retirement': "This isn't goodbye—it's 'see you on the next adventure.' The best chapters of your story are still being written!",
+      'Business Event': "Let's not just aim for success—let's aim to make a difference. Together, we can achieve something truly extraordinary.",
+      'Special Event': "Let this moment inspire you to reach higher, dream bigger, and never stop believing in what's possible. The best is yet to come!"
+    }
+  };
 
-Thank you for your attention, and let us continue to celebrate this wonderful occasion together!`;
+  speech += closings[styleKey][occasionKey];
+
+  return speech;
 }
 
 module.exports = {
