@@ -7,6 +7,7 @@ export interface SpeechData {
   audience: string;
   key_points: string[];
   personal_stories: string[];
+  additionalContext?: string;
 }
 
 export interface Speech {

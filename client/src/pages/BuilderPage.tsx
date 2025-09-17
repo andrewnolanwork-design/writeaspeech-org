@@ -491,8 +491,6 @@ In a real implementation, you would be redirected to view your completed speech.
           speechData={speechData}
           userId={currentUser?.uid}
           onSuccess={handlePaymentSuccess}
-          pricingPlan={currentPlan}
-          planDetails={planDetails[currentPlan]}
         />
       </div>
     </div>
