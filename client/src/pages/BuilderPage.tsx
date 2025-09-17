@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { generateSpeech } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import PaymentModal from '../components/payment/PaymentModal';
@@ -19,6 +20,7 @@ interface PlanDetails {
 
 const BuilderPage: React.FC = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [speechData, setSpeechData] = useState<SpeechData>({
     occasion: '',
@@ -77,26 +79,8 @@ const BuilderPage: React.FC = () => {
 
   // Function to display generated speech content
   const displayGeneratedSpeech = (speech: any, plan: PricingPlan) => {
-    // Create a detailed modal or page showing the speech content
-    const speechContent = `
-📝 **Your ${planDetails[plan].name} Speech is Ready!**
-
-**Title:** ${speech.title || 'Your Speech'}
-**Word Count:** ${speech.wordCount} words
-**Duration:** ${speech.estimatedDuration}
-**Created:** ${new Date().toLocaleDateString()}
-
-**Your Speech Content:**
-${speech.content}
-
-${plan === 'free' ? '⚠️ **Note:** This is a free trial version with watermark.' : '✅ **Premium Speech:** Full access with all features included.'}
-    `;
-
-    // For now, use a styled alert - in production this would be a modal or new page
-    alert(speechContent);
-    
-    // TODO: In production, redirect to a speech viewer page or show in a modal
-    // Example: navigate(`/speech/${speech.id}`);
+    // Navigate to the speech viewer page
+    navigate(`/speech/${speech.id}`);
   };
 
   const isStepValid = () => {

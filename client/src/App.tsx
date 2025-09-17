@@ -17,6 +17,7 @@ import HelpPage from './pages/HelpPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import RefundPolicyPage from './pages/RefundPolicyPage';
+import SpeechViewerPage from './pages/SpeechViewerPage';
 
 // Auth Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -77,6 +78,14 @@ function AppContent() {
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/refund" element={<RefundPolicyPage />} />
+            <Route 
+              path="/speech/:speechId" 
+              element={
+                <ProtectedRoute>
+                  <SpeechViewerPage />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
 
