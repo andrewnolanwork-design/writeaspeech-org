@@ -3,6 +3,9 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const { generateSpeech } = require('../config/openai');
 
+// In-memory storage for speeches (in production, this would be a database)
+const speechStorage = new Map();
+
 /**
  * POST /api/speech/generate
  * Generate a speech using AI
@@ -76,8 +79,9 @@ router.post('/generate', async (req, res) => {
       updatedAt: new Date().toISOString()
     };
 
-    // TODO: Save to database
-    console.log('Generated speech:', completedSpeech);
+    // Save to in-memory storage (in production, this would be a database)
+    speechStorage.set(speechId, completedSpeech);
+    console.log('Generated and stored speech:', speechId);
 
     res.json({
       message: 'Speech generated successfully',
@@ -151,9 +155,20 @@ router.get('/:speechId', async (req, res) => {
   try {
     const { speechId } = req.params;
 
-    // TODO: Fetch from database
-    // For now, return a mock speech
-    const mockSpeech = {
+    // Try to get speech from in-memory storage
+    const storedSpeech = speechStorage.get(speechId);
+    
+    if (storedSpeech) {
+      console.log('Found stored speech:', speechId);
+      res.json({
+        speech: storedSpeech
+      });
+      return;
+    }
+
+    // If not found, return a fallback mock speech
+    console.log('Speech not found in storage, returning fallback for:', speechId);
+    const fallbackSpeech = {
       id: speechId,
       title: 'Best Man Speech for Jake\'s Wedding',
       occasion: 'Wedding',
@@ -183,7 +198,7 @@ router.get('/:speechId', async (req, res) => {
     };
 
     res.json({
-      speech: mockSpeech
+      speech: fallbackSpeech
     });
 
   } catch (error) {
