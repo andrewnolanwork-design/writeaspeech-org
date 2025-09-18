@@ -17,17 +17,18 @@ if (process.env.OPENAI_API_KEY) {
         create: async ({ messages, model, max_tokens, temperature }) => {
           console.log('Mock OpenAI call:', { messages, model, max_tokens, temperature });
           
-          // Extract speech parameters from the last message
+          // Extract speech parameters from the enhanced prompt format
           const userMessage = messages[messages.length - 1].content;
+          const systemMessage = messages[0].content;
           
-          // Generate a mock speech based on the prompt
-          const mockSpeech = generateMockSpeechFromPrompt(userMessage);
+          // Generate a high-quality mock speech following the enhanced prompt template
+          const mockSpeech = generateEnhancedMockSpeechFromPrompt(userMessage, systemMessage);
           
           return {
             id: 'chatcmpl-mock-' + Date.now(),
             object: 'chat.completion',
             created: Math.floor(Date.now() / 1000),
-            model: model || 'gpt-3.5-turbo',
+            model: model || 'gpt-4',
             choices: [{
               index: 0,
               message: {
@@ -37,9 +38,9 @@ if (process.env.OPENAI_API_KEY) {
               finish_reason: 'stop'
             }],
             usage: {
-              prompt_tokens: 150,
-              completion_tokens: 400,
-              total_tokens: 550
+              prompt_tokens: 250,
+              completion_tokens: 650,
+              total_tokens: 900
             }
           };
         }
@@ -301,133 +302,158 @@ function getWordCount(length) {
 }
 
 /**
- * Generate a realistic mock speech from a prompt (for development)
+ * Generate a high-quality mock speech following the enhanced prompt template
  */
-function generateMockSpeechFromPrompt(prompt) {
-  // Extract speech parameters from the prompt
-  const occasionMatch = prompt.match(/occasion.*?:\s*([^\n]+)/i);
-  const styleMatch = prompt.match(/style.*?:\s*([^\n]+)/i);
-  const keyPointsMatch = prompt.match(/key points.*?:\s*(.*?)(?=personal stories|$)/si);
-  const storiesMatch = prompt.match(/personal stories.*?:\s*(.*?)(?=\n\n|$)/si);
+function generateEnhancedMockSpeechFromPrompt(userMessage, systemMessage) {
+  // Extract parameters from the new USER SPECIFICATIONS format
+  const occasionMatch = userMessage.match(/1\.\s*Occasion:\s*([^\n]+)/i);
+  const styleMatch = userMessage.match(/2\.\s*Style Profile:\s*([^\n]+)/i);
+  const lengthMatch = userMessage.match(/3\.\s*Speech Length:\s*([^\n]+)/i);
+  const audienceMatch = userMessage.match(/4\.\s*Audience:\s*([^\n]+)/i);
+  const keyPointsMatch = userMessage.match(/5\.\s*Key Points to Include:\s*(.*?)(?=6\.|$)/si);
+  const storiesMatch = userMessage.match(/6\.\s*Personal Stories.*?:\s*(.*?)(?=Final Check|$)/si);
+  const wordCountMatch = userMessage.match(/Target Word Count:\s*([^\n]+)/i);
   
   const occasion = occasionMatch ? occasionMatch[1].trim() : 'Special Event';
   const style = styleMatch ? styleMatch[1].trim() : 'Heartfelt';
-  const keyPoints = keyPointsMatch ? keyPointsMatch[1].split('\n').filter(p => p.trim()) : [];
-  const stories = storiesMatch ? storiesMatch[1].split('\n').filter(s => s.trim()) : [];
+  const length = lengthMatch ? lengthMatch[1].trim() : '3-5 minutes';
+  const audience = audienceMatch ? audienceMatch[1].trim() : 'Friends and Family';
+  const wordCount = wordCountMatch ? wordCountMatch[1].trim() : '450-750 words';
   
-  // Use the enhanced mock speech generator
-  return generateEnhancedMockSpeech({ 
-    occasion, 
-    style, 
-    key_points: keyPoints, 
-    personal_stories: stories 
+  // Extract key points (clean up any formatting issues)
+  let keyPoints = [];
+  if (keyPointsMatch) {
+    keyPoints = keyPointsMatch[1]
+      .split('\n')
+      .map(p => p.replace(/^[•\-\*]\s*/, '').trim())
+      .filter(p => p && p !== 'No specific key points provided - create compelling content based on other parameters.');
+  }
+  
+  // Extract personal stories (clean up any formatting issues)
+  let stories = [];
+  if (storiesMatch) {
+    const storiesText = storiesMatch[1].trim();
+    if (!storiesText.includes('No specific personal stories provided')) {
+      stories = storiesText
+        .split('\n')
+        .map(s => s.replace(/^\d+\.\s*/, '').trim())
+        .filter(s => s);
+    }
+  }
+  
+  // Generate a professional, high-quality speech
+  return generateProfessionalMockSpeech({
+    occasion,
+    style,
+    length,
+    audience,
+    wordCount,
+    key_points: keyPoints,
+    personal_stories: stories
   });
 }
 
 /**
- * Enhanced mock speech generator with realistic content
+ * Generate a professional, high-quality mock speech that follows the enhanced prompt template
  */
-function generateEnhancedMockSpeech({ occasion, style, key_points = [], personal_stories = [] }) {
-  let speech = "";
+function generateProfessionalMockSpeech({ occasion, style, length, audience, wordCount, key_points = [], personal_stories = [] }) {
+  // Generate a complete, high-quality speech following the enhanced template
+  let speech = '';
   
-  // Style-specific openings
-  const openings = {
-    'Heartfelt': {
-      'Wedding': "Good evening, everyone. You know, when I think about love, I think about the kind of connection that makes you believe in magic again...",
-      'Birthday': "Looking around this room tonight, I'm reminded of how one person can touch so many lives...",
-      'Retirement': "Thirty-five years. That's not just a number—it's a lifetime of dedication, friendship, and moments that shaped all of us...",
-      'Business Event': "I've been thinking about what it means to make a real difference, and that brings me to why we're here tonight...",
-      'Special Event': "There are moments in life that remind us what truly matters, and tonight is one of those moments..."
-    },
+  // THE OPENER - Natural, engaging opening
+  speech += generateProfessionalOpener(style, occasion);
+  speech += '\n\n';
+  
+  // THE BODY - Weave in key points and stories naturally
+  speech += generateProfessionalBody(style, occasion, key_points, personal_stories);
+  speech += '\n\n';
+  
+  // THE CLOSER - Memorable conclusion
+  speech += generateProfessionalCloser(style, occasion);
+  
+  return speech;
+}
+
+function generateProfessionalOpener(style, occasion) {
+  const openers = {
     'Witty': {
-      'Wedding': "So here we are, gathered to witness two people promise to put up with each other's weird habits for the rest of their lives...",
-      'Birthday': "They say age is just a number. Well, tonight that number is getting pretty impressive...",
-      'Retirement': "After decades of pretending to work while actually planning your retirement, the day has finally come...",
-      'Business Event': "I was going to start with a joke about our quarterly numbers, but then I realized our quarterly numbers ARE the joke...",
-      'Special Event': "I've been asked to say a few words, which is dangerous because I have a lot of words and very little filter..."
+      'Birthday': "You know what I love about birthdays? They're the one day a year when it's socially acceptable to demand attention, eat cake for breakfast, and make everyone sing to you... and honestly, you've earned every bit of it.",
+      'Wedding': "So here we are, watching two people make the most expensive promise they'll ever make... and somehow, I couldn't be happier for them."
     },
-    'Formal': {
-      'Wedding': "Distinguished guests, family, and friends, we gather today to celebrate the union of two remarkable individuals...",
-      'Birthday': "Esteemed friends and family, we are here to honor someone who has enriched all our lives...",
-      'Retirement': "Respected colleagues and friends, today we recognize a career marked by excellence and dedication...",
-      'Business Event': "Honored guests and colleagues, I stand before you to address matters of great importance to our organization...",
-      'Special Event': "Distinguished guests, it is my honor to address you on this significant occasion..."
-    },
-    'Inspiring': {
-      'Wedding': "Love doesn't just happen to us—it transforms us, challenges us, and shows us what we're truly capable of...",
-      'Birthday': "Every birthday is a celebration of possibility, of dreams realized and adventures yet to come...",
-      'Retirement': "What we call an ending is really a beginning—the start of a new chapter filled with unlimited potential...",
-      'Business Event': "Excellence isn't an accident. It's the result of vision, determination, and the courage to dream bigger...",
-      'Special Event': "Today we celebrate not just an event, but the power of human potential and the courage to pursue our dreams..."
+    'Heartfelt': {
+      'Birthday': "Looking around this room tonight, I'm struck by something beautiful... we're all here because one person has touched our lives in ways we're still discovering.",
+      'Wedding': "There's something magical about love that makes us all believers again. Standing here today, watching these two, I'm reminded of why we never stop hoping for that kind of connection."
     }
   };
+  
+  return openers[style]?.[occasion] || "Thank you all for being here tonight. This is truly a special moment.";
+}
 
-  // Start with opening
-  const styleKey = Object.keys(openings).find(s => s.toLowerCase() === style.toLowerCase()) || 'Heartfelt';
-  const occasionKey = Object.keys(openings[styleKey]).find(o => o.toLowerCase() === occasion.toLowerCase()) || 'Special Event';
-  speech += openings[styleKey][occasionKey];
-  speech += '\n\n';
-
-  // Add key points naturally integrated
-  if (key_points.length > 0) {
-    if (styleKey === 'Witty') {
-      speech += "Now, I could stand here and tell you all the obvious things, but instead let me share what really matters:\n\n";
-    } else if (styleKey === 'Heartfelt') {
-      speech += "I want to share some things that have been on my heart:\n\n";
+function generateProfessionalBody(style, occasion, key_points, personal_stories) {
+  let body = '';
+  
+  // Add meaningful content based on key points
+  if (key_points.length > 0 && key_points[0] && key_points[0].trim()) {
+    if (style === 'Witty') {
+      body += "Now, I could stand here and tell you all the predictable things, but let me share what really matters... ";
     } else {
-      speech += "There are several important points I'd like to address:\n\n";
+      body += "I want to share something that captures the essence of this moment... ";
     }
     
-    key_points.forEach((point, index) => {
-      const cleanPoint = point.replace(/^[•\-\*]\s*/, '').trim();
-      speech += `${cleanPoint} - This captures something essential about who we're celebrating today.\n\n`;
+    key_points.forEach(point => {
+      if (point && point.trim()) {
+        body += `${point}. `;
+        if (style === 'Witty') {
+          body += "And if you know them like I do, you'll understand exactly why this is so perfectly fitting. ";
+        } else {
+          body += "This speaks to something beautiful about who they are and what they mean to all of us. ";
+        }
+      }
     });
+    body += '\n\n';
   }
-
-  // Add personal stories with rich detail
-  if (personal_stories.length > 0) {
-    speech += "Let me paint you a picture with a story that captures exactly who this person is:\n\n";
-    const firstStory = personal_stories[0] ? personal_stories[0].replace(/^[•\-\*]\s*/, '').trim() : '';
-    if (firstStory) {
-      speech += `${firstStory} - That's the kind of person we're celebrating today.\n\n`;
-    }
+  
+  // Add personal stories if provided
+  if (personal_stories.length > 0 && personal_stories[0] && personal_stories[0].trim()) {
+    body += "Let me tell you a story that perfectly captures who we're celebrating... ";
+    personal_stories.forEach(story => {
+      if (story && story.trim()) {
+        body += `${story}. `;
+        if (style === 'Witty') {
+          body += "That's when I knew we were dealing with someone truly special—even if they don't always show it in conventional ways! ";
+        } else {
+          body += "In that moment, I saw something incredible about their character that I'll never forget. ";
+        }
+      }
+    });
+    body += '\n\n';
   }
+  
+  // Add substantial content to reach proper length
+  if (style === 'Witty' && occasion === 'Birthday') {
+    body += "What I admire most is how you've mastered the art of taking important things seriously while never taking yourself too seriously. You've got this incredible ability to find humor in the chaos and wisdom in the unexpected. ";
+    body += "I've watched you navigate life's ups and downs with a grace that makes it look easy—though we all know it's not. You've taught us that laughter really is the best medicine, especially when served with good friends and questionable dance moves. ";
+  } else if (style === 'Heartfelt') {
+    body += "What strikes me most is how you've touched each of our lives in different ways, yet somehow consistently shown us what kindness, generosity, and genuine care look like in action. ";
+    body += "You've been there for the big moments and the small ones, offering support when we needed it most and celebration when we achieved something worth sharing. That's the mark of someone truly special. ";
+  }
+  
+  return body;
+}
 
-  // Style-specific closings
-  const closings = {
-    'Heartfelt': {
-      'Wedding': "So as you begin this incredible journey together, remember that love isn't just about finding someone you can live with—it's about finding someone you can't imagine living without. Here's to a lifetime of love, laughter, and beautiful moments. Cheers!",
-      'Birthday': "As we celebrate another year of your amazing life, I hope you know how grateful we all are to know you. Here's to many more years of joy, adventure, and dreams coming true!",
-      'Retirement': "Your legacy isn't just in the work you've done—it's in the lives you've touched, the people you've mentored, and the example you've set. Enjoy this new chapter!",
-      'Business Event': "Thank you for reminding us what excellence looks like and for inspiring us to reach higher. Together, we'll continue building something remarkable.",
-      'Special Event': "Thank you for being part of this special moment. May it be the beginning of something wonderful."
-    },
+function generateProfessionalCloser(style, occasion) {
+  const closers = {
     'Witty': {
-      'Wedding': "Marriage is like a good wine—it gets better with age, but sometimes it gives you a headache the next morning. Here's to a lifetime of good vintages and minimal hangovers!",
-      'Birthday': "They say the secret to staying young is to live honestly, eat slowly, and lie about your age. You've mastered at least one of those! Happy birthday!",
-      'Retirement': "Retirement: where every day is Saturday and every night is Friday! You've earned every single one of those Saturdays.",
-      'Business Event': "In closing, remember: we may not have all the answers, but at least we have good coffee and an open bar tonight!",
-      'Special Event': "And remember, life is too important to be taken seriously all the time. Thank you and good night!"
+      'Birthday': "So here's to another year of questionable decisions, excellent results, and the kind of friendship that makes life infinitely more entertaining. Happy birthday!",
+      'Wedding': "Marriage is like a really good wine—it gets better with age, occasionally gives you a headache, and is best enjoyed with friends nearby. Here's to a vintage that will only improve with time!"
     },
-    'Formal': {
-      'Wedding': "May your union be blessed with happiness, prosperity, and enduring love. Congratulations to the happy couple.",
-      'Birthday': "We extend our warmest wishes for continued health, happiness, and success in the year ahead.",
-      'Retirement': "We wish you a fulfilling and joyous retirement, knowing that your contributions will long be remembered and appreciated.",
-      'Business Event': "Thank you for your attention, and I look forward to our continued collaboration and success.",
-      'Special Event': "Thank you for your attention, and may this occasion mark the beginning of continued success and happiness."
-    },
-    'Inspiring': {
-      'Wedding': "Your love story is just beginning, and I can't wait to see how you'll inspire others with your journey. Dream big, love deeply, and never stop believing in the magic you create together!",
-      'Birthday': "Another year means another chance to make your mark on this world. I know you'll make it count. Here's to the amazing adventures ahead!",
-      'Retirement': "This isn't goodbye—it's 'see you on the next adventure.' The best chapters of your story are still being written!",
-      'Business Event': "Let's not just aim for success—let's aim to make a difference. Together, we can achieve something truly extraordinary.",
-      'Special Event': "Let this moment inspire you to reach higher, dream bigger, and never stop believing in what's possible. The best is yet to come!"
+    'Heartfelt': {
+      'Birthday': "As we celebrate another year of your incredible journey, know that we're all grateful to be part of your story. Here's to many more chapters filled with joy, love, and beautiful moments.",
+      'Wedding': "So as you begin this beautiful adventure together, remember that the best love stories aren't the ones that end happily ever after—they're the ones that keep getting better every day. Here's to your forever."
     }
   };
-
-  speech += closings[styleKey][occasionKey];
-
-  return speech;
+  
+  return closers[style]?.[occasion] || "Thank you for this special moment, and here's to all the beautiful moments yet to come!";
 }
 
 module.exports = {
