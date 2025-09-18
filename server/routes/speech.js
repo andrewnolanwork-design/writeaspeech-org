@@ -105,37 +105,34 @@ router.get('/user/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // TODO: Fetch from database
-    // For now, return mock speeches
-    const mockSpeeches = [
-      {
-        id: '1',
-        userId,
-        title: 'Best Man Speech for Jake\'s Wedding',
-        occasion: 'Wedding',
-        style: 'Heartfelt',
-        status: 'completed',
-        wordCount: 650,
-        estimatedDuration: '4-5 minutes',
-        createdAt: '2024-01-15T10:00:00.000Z',
-        updatedAt: '2024-01-15T10:00:00.000Z'
-      },
-      {
-        id: '2',
-        userId,
-        title: 'Retirement Speech for Dad',
-        occasion: 'Retirement',
-        style: 'Inspiring',
-        status: 'draft',
-        wordCount: 450,
-        estimatedDuration: '3-4 minutes',
-        createdAt: '2024-01-10T15:30:00.000Z',
-        updatedAt: '2024-01-10T15:30:00.000Z'
+    // Get all speeches for this user from in-memory storage
+    const userSpeeches = [];
+    
+    for (const [speechId, speech] of speechStorage.entries()) {
+      if (speech.userId === userId) {
+        // Generate title from occasion and style if not present
+        const title = speech.title || `${speech.style} ${speech.occasion} Speech`;
+        
+        userSpeeches.push({
+          id: speech.id,
+          userId: speech.userId,
+          title: title,
+          occasion: speech.occasion,
+          style: speech.style,
+          status: speech.status,
+          wordCount: speech.wordCount || 0,
+          estimatedDuration: speech.estimatedDuration || '3-5 minutes',
+          createdAt: speech.createdAt,
+          updatedAt: speech.updatedAt
+        });
       }
-    ];
+    }
+
+    // Sort by creation date (newest first)
+    userSpeeches.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     res.json({
-      speeches: mockSpeeches
+      speeches: userSpeeches
     });
 
   } catch (error) {

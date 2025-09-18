@@ -358,18 +358,29 @@ function generateEnhancedMockSpeechFromPrompt(userMessage, systemMessage) {
  */
 function generateProfessionalMockSpeech({ occasion, style, length, audience, wordCount, key_points = [], personal_stories = [] }) {
   // Generate a complete, high-quality speech following the enhanced template
+  console.log('🎤 Generating professional mock speech:', { occasion, style, length, key_points, personal_stories });
+  
   let speech = '';
   
   // THE OPENER - Natural, engaging opening
-  speech += generateProfessionalOpener(style, occasion);
+  const opener = generateProfessionalOpener(style, occasion);
+  console.log('📝 Opener length:', opener.split(' ').length, 'words');
+  speech += opener;
   speech += '\n\n';
   
   // THE BODY - Weave in key points and stories naturally
-  speech += generateProfessionalBody(style, occasion, key_points, personal_stories);
+  const body = generateProfessionalBody(style, occasion, key_points, personal_stories);
+  console.log('📝 Body length:', body.split(' ').length, 'words');
+  speech += body;
   speech += '\n\n';
   
   // THE CLOSER - Memorable conclusion
-  speech += generateProfessionalCloser(style, occasion);
+  const closer = generateProfessionalCloser(style, occasion);
+  console.log('📝 Closer length:', closer.split(' ').length, 'words');
+  speech += closer;
+  
+  const totalWords = speech.split(' ').length;
+  console.log('📝 Total speech length:', totalWords, 'words (target: 450-750)');
   
   return speech;
 }
@@ -429,13 +440,21 @@ function generateProfessionalBody(style, occasion, key_points, personal_stories)
     body += '\n\n';
   }
   
-  // Add substantial content to reach proper length
-  if (style === 'Witty' && occasion === 'Birthday') {
-    body += "What I admire most is how you've mastered the art of taking important things seriously while never taking yourself too seriously. You've got this incredible ability to find humor in the chaos and wisdom in the unexpected. ";
-    body += "I've watched you navigate life's ups and downs with a grace that makes it look easy—though we all know it's not. You've taught us that laughter really is the best medicine, especially when served with good friends and questionable dance moves. ";
+  // Add substantial content to reach proper length based on style and occasion
+  if (style === 'Witty') {
+    if (occasion === 'Wedding') {
+      body += "You know, they say marriage is all about finding that one special person you want to annoy for the rest of your life... and looking at these two, I think they've found their perfect match in mutual annoyance! But seriously, what I love about their relationship is how they bring out the best in each other while somehow making it look effortless.\n\n";
+      body += "I've had the privilege of watching their love story unfold, and let me tell you, it's been better than any romantic comedy—and definitely funnier. They've shown us that true love isn't just about the grand gestures; it's about finding someone who laughs at your terrible jokes, puts up with your weird habits, and still chooses to love you even when you leave dirty dishes in the sink.\n\n";
+      body += "What strikes me most about these two is how they've managed to maintain their individual quirks while becoming this incredible team. They complement each other in the most unexpected ways—where one is organized, the other brings spontaneity; where one is practical, the other dreams big. It's like watching a perfectly choreographed dance, except sometimes one of them steps on the other's toes, and somehow that makes it even more beautiful.\n\n";
+    } else if (occasion === 'Birthday') {
+      body += "What I admire most is how you've mastered the art of taking important things seriously while never taking yourself too seriously. You've got this incredible ability to find humor in the chaos and wisdom in the unexpected. I've watched you turn ordinary moments into extraordinary memories just by being authentically you.\n\n";
+      body += "You know what sets you apart? It's not just your amazing sense of humor—though that certainly helps get us through the tough times. It's your incredible capacity to make everyone around you feel like they matter. You remember the little things, you show up when it counts, and you somehow always know exactly what to say to make someone's day better.\n\n";
+      body += "I've watched you navigate life's ups and downs with a grace that makes it look easy—though we all know it's not. You've taught us that laughter really is the best medicine, especially when served with good friends, questionable dance moves, and the occasional midnight snack run. You've shown us that growing older doesn't mean growing up completely, and that's a gift we all need more of.\n\n";
+    }
   } else if (style === 'Heartfelt') {
-    body += "What strikes me most is how you've touched each of our lives in different ways, yet somehow consistently shown us what kindness, generosity, and genuine care look like in action. ";
-    body += "You've been there for the big moments and the small ones, offering support when we needed it most and celebration when we achieved something worth sharing. That's the mark of someone truly special. ";
+    body += "What strikes me most is how you've touched each of our lives in different ways, yet somehow consistently shown us what kindness, generosity, and genuine care look like in action. You've been there for the big moments and the small ones, offering support when we needed it most and celebration when we achieved something worth sharing.\n\n";
+    body += "I've been thinking about all the ways you've made a difference—not just in grand gestures, but in the quiet moments, the thoughtful words, the way you listen without judgment and love without conditions. You've taught us that true strength comes from vulnerability, that real wisdom comes from experience, and that the most meaningful connections are built on authenticity and trust.\n\n";
+    body += "In a world that often feels rushed and disconnected, you've reminded us to slow down, to appreciate the people we love, and to never take for granted the precious moments we share together. That's not just a gift—it's a legacy that will continue to inspire us long after tonight is over.\n\n";
   }
   
   return body;
