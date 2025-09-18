@@ -76,20 +76,19 @@ async function generateSpeech({
       messages: [
         {
           role: 'system',
-          content: `You are an expert speechwriter who writes like real people talk - conversational, authentic, and deeply human. 
+          content: `You are an expert speechwriter and a world-class public speaking coach. Your primary goal is to write a powerful, original, and emotionally resonant speech that sounds like it was written by a real person, not an AI. You will craft a speech that is perfectly tailored to the user's specifications. Your output must be only the speech itself, without any introductory or concluding remarks from you.
 
-CRITICAL RULES:
-- Write as if the speaker is having an intimate conversation with close friends
-- Use contractions naturally (I'm, don't, we'll, that's)
-- Include emotional pauses, natural hesitations, and conversational connectors
-- NEVER use AI-sounding phrases like "In conclusion," "Furthermore," "Moreover," "Additionally"
-- Start with genuine, personal openings, not formal announcements
-- Use specific, vivid details that paint pictures in listeners' minds
-- Include genuine emotions and vulnerability when appropriate
-- End with heartfelt, memorable moments, not summary statements
-- Make every sentence sound like something a real person would actually say out loud
-- Include natural speech patterns like "You know what I mean?" or "And here's the thing..."
-- Use storytelling techniques with dialogue, sensory details, and emotional peaks`
+Core Instructions:
+Human-Like Quality: Write in a natural, conversational style. Use rhetorical devices such as pauses (indicated by "..."), varied sentence lengths, and direct address to the audience to make the speech flow beautifully when spoken aloud. Avoid clichés and generic phrases.
+
+Strict Word Count: Adhere strictly to the specified word count. This is a critical constraint.
+
+Logical Structure: The speech must have a clear and compelling structure:
+- The Opener: An engaging opening that grabs the audience's attention, introduces you (the speaker), and states the purpose of the speech.
+- The Body: The main section where you will weave in the key points and personal stories. Ensure smooth transitions between different ideas or stories.
+- The Closer: A memorable conclusion that summarizes the core message and ends with a powerful final thought, such as a toast, a call to action, or a heartfelt wish.
+
+Tone and Style Adherence: The most important task is to perfectly capture the requested style. Your word choice, sentence structure, and overall emotional tone must be a direct reflection of the selected personality.`
         },
         {
           role: 'user',
@@ -119,68 +118,36 @@ function createSpeechPrompt({
   personal_stories,
   additionalContext
 }) {
-  const humanWritingTechniques = getHumanWritingTechniques(style, occasion);
-  const emotionalTone = getEmotionalTone(style, occasion);
-  const conversationalElements = getConversationalElements(style);
+  const wordCount = getWordCount(length);
+  const styleGuidelines = getStyleGuidelines(style);
 
-  let prompt = `Write a deeply human, conversational ${style.toLowerCase()} speech for a ${occasion.toLowerCase()}.
+  let prompt = `USER SPECIFICATIONS
+1. Occasion: ${occasion}
+2. Style Profile: ${style}
+${styleGuidelines}
 
-🎯 **THE SPEAKER'S VOICE:**
-This person is speaking to ${audience}. They want to sound like themselves - genuine, real, and connected to everyone in the room.
+3. Speech Length: ${length}
+Target Word Count: ${wordCount} words
 
-🎨 **STYLE & EMOTION:**
-${getAdvancedStyleGuidelines(style)}
+4. Audience: ${audience}
+Tailor the language, jokes, and references to be perfectly understandable and relatable for this specific group.
 
-⏱️ **PACING & LENGTH:**
-Target ${getWordCount(length)} words (${length} speaking time).
-${getAdvancedLengthGuidelines(length)}
+5. Key Points to Include:
+${key_points.length > 0 ? key_points.map(point => `• ${point}`).join('\n') : 'No specific key points provided - create compelling content based on other parameters.'}
 
-`;
-
-  if (personal_stories.length > 0) {
-    prompt += `💝 **PERSONAL STORIES TO WEAVE IN:**
-${personal_stories.map((story, index) => `${index + 1}. ${story} 
-   → Transform this into vivid storytelling with dialogue, emotions, and sensory details`).join('\n')}
-
-`;
-  }
-
-  if (key_points.length > 0) {
-    prompt += `🎯 **KEY MESSAGES (weave naturally into stories, don't list):**
-${key_points.map(point => `• ${point}`).join('\n')}
-
-`;
-  }
+6. Personal Stories to Weave In${personal_stories.length > 0 ? ':' : ' (if provided):'}
+${personal_stories.length > 0 ? personal_stories.map((story, index) => `${index + 1}. ${story}`).join('\n') : 'No specific personal stories provided - you may create plausible, positive scenarios that fit the theme if needed.'}`;
 
   if (additionalContext) {
-    prompt += `📝 **ADDITIONAL CONTEXT:**
-${additionalContext}
+    prompt += `
 
-`;
+7. Additional Context:
+${additionalContext}`;
   }
 
-  prompt += `🎪 **HUMAN WRITING TECHNIQUES TO USE:**
-${humanWritingTechniques}
+  prompt += `
 
-💬 **CONVERSATIONAL ELEMENTS:**
-${conversationalElements}
-
-🎭 **EMOTIONAL JOURNEY:**
-${emotionalTone}
-
-✨ **STRUCTURE REQUIREMENTS:**
-1. **Opening:** Start with a moment, feeling, or observation - NOT an announcement
-2. **Body:** Weave stories and messages together naturally, like you're talking to friends
-3. **Closing:** End with a genuine emotion or call to action that feels inevitable
-
-🚫 **ABSOLUTELY AVOID:**
-- Formal speech language ("Distinguished guests," "In conclusion")
-- Listing points mechanically
-- Generic phrases that could apply to anyone
-- Stiff transitions between sections
-- Summary endings that repeat what was just said
-
-Write the complete speech now, making it sound like a real person talking from the heart:`;
+Final Check: Before generating, review all specifications. The final output must be only the text of the speech, ready to be read aloud. It must meet the word count, match the tone, and seamlessly integrate all the required content.`;
 
   return prompt;
 }
@@ -285,14 +252,14 @@ function getEmotionalTone(style, occasion) {
 }
 
 /**
- * Get legacy style guidelines (keeping for backward compatibility)
+ * Get style guidelines following the new prompt template format
  */
 function getStyleGuidelines(style) {
   const guidelines = {
-    'Heartfelt': 'Sincere, emotional, and touching. Use personal anecdotes and speak from the heart.',
-    'Witty': 'Funny, entertaining, and light-hearted. Include humor and amusing observations.',
-    'Formal': 'Professional, polished, and respectful. Maintain dignity and proper etiquette.',
-    'Inspiring': 'Motivational, uplifting, and encouraging. Focus on positive messages and future aspirations.'
+    'Heartfelt': `If 'Heartfelt': Focus on genuine emotion, sincerity, and vulnerability. Use evocative language to create a deep emotional connection with the audience. The tone should be warm, loving, and deeply personal.`,
+    'Witty': `If 'Witty': The primary goal is to entertain. Use clever wordplay, light-hearted roasts (if appropriate for the occasion), humorous anecdotes, and observational humor. The tone should be funny, charming, and engaging, but still appropriate for the occasion.`,
+    'Formal': `If 'Formal': Adopt a polished, professional, and respectful tone. The language should be eloquent and the structure impeccable. Avoid slang, casual language, and overly personal anecdotes unless they serve a specific, professional purpose.`,
+    'Inspiring': `If 'Inspiring': The goal is to motivate and uplift. Use powerful verbs, aspirational language, and stories of growth or achievement. The tone should be optimistic, encouraging, and passionate.`
   };
   return guidelines[style] || guidelines['Heartfelt'];
 }
