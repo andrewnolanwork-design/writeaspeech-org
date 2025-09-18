@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserSpeeches, getSpeech, Speech } from '../api/speech';
+import { getUserSpeeches, getSpeech } from '../api/speech';
+import type { Speech } from '../api/speech';
 import PracticeToolkit from '../components/toolkit/PracticeToolkit';
 import ExportModal from '../components/common/ExportModal';
 
