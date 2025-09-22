@@ -37,8 +37,12 @@ const BuilderPage: React.FC = () => {
   const [customOccasion, setCustomOccasion] = useState('');
   
   // State for managing dynamic content
-  const [newPersonName, setNewPersonName] = useState('');
-  const [newPersonRelationship, setNewPersonRelationship] = useState('');
+  const [peopleInputs, setPeopleInputs] = useState([
+    { name: '', relationship: '' },
+    { name: '', relationship: '' },
+    { name: '', relationship: '' },
+    { name: '', relationship: '' }
+  ]);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
   const [selectedStoryPrompts, setSelectedStoryPrompts] = useState<string[]>([]);
   
@@ -96,7 +100,7 @@ const BuilderPage: React.FC = () => {
       case 2: return speechData.style !== '';
       case 3: return speechData.length !== '';
       case 4: return selectedAudiences.length > 0 || customAudience.trim() !== '';
-      case 5: return speechData.people.length > 0; // At least one person required
+      case 5: return peopleInputs.some(p => p.name.trim() !== ''); // At least one person name required
       case 6: return speechData.key_points.length > 0 || speechData.personal_stories.length > 0; // At least some content
       case 7: return true; // Review step
       case 8: return true; // Final review step
@@ -112,6 +116,16 @@ const BuilderPage: React.FC = () => {
       } else if (currentStep === 4) {
         const audienceText = [...selectedAudiences, customAudience].filter(Boolean).join(', ');
         setSpeechData({ ...speechData, audience: audienceText });
+      } else if (currentStep === 5) {
+        // Convert people inputs to Person objects
+        const people = peopleInputs
+          .filter(p => p.name.trim() !== '')
+          .map((p, index) => ({
+            id: `person_${index}_${Date.now()}`,
+            name: p.name.trim(),
+            relationship: p.relationship.trim() || undefined
+          }));
+        setSpeechData({ ...speechData, people });
       }
       setCurrentStep(currentStep + 1);
     }
@@ -125,37 +139,13 @@ const BuilderPage: React.FC = () => {
     );
   };
 
-  // Helper functions for managing people
-  const addPerson = () => {
-    if (newPersonName.trim()) {
-      const newPerson: Person = {
-        id: Date.now().toString(),
-        name: newPersonName.trim(),
-        relationship: newPersonRelationship.trim() || undefined
-      };
-      setSpeechData(prev => ({
-        ...prev,
-        people: [...prev.people, newPerson]
-      }));
-      setNewPersonName('');
-      setNewPersonRelationship('');
-    }
-  };
-
-  const removePerson = (personId: string) => {
-    setSpeechData(prev => ({
-      ...prev,
-      people: prev.people.filter(p => p.id !== personId),
-      // Also remove this person from any linked points/stories
-      key_points: prev.key_points.map(kp => ({
-        ...kp,
-        linkedPeople: kp.linkedPeople.filter(id => id !== personId)
-      })),
-      personal_stories: prev.personal_stories.map(ps => ({
-        ...ps,
-        linkedPeople: ps.linkedPeople.filter(id => id !== personId)
-      }))
-    }));
+  // Helper functions for managing people inputs
+  const updatePersonInput = (index: number, field: 'name' | 'relationship', value: string) => {
+    setPeopleInputs(prev => {
+      const newInputs = [...prev];
+      newInputs[index] = { ...newInputs[index], [field]: value };
+      return newInputs;
+    });
   };
 
   // Helper functions for managing key points
@@ -484,60 +474,57 @@ const BuilderPage: React.FC = () => {
         return (
           <div className="step-content">
             <h2>Who will your speech be about?</h2>
-            <p>Add the names of people you'll be speaking about in your speech</p>
+            <p>Add the names of people you'll be speaking about in your speech (up to 4 people)</p>
             
             <div className="people-section">
               <div className="add-person-form">
                 <div className="input-row">
-                  <input
-                    type="text"
-                    value={newPersonName}
-                    onChange={(e) => setNewPersonName(e.target.value)}
-                    placeholder="Person's name"
-                    className="person-name-input"
-                    onKeyPress={(e) => e.key === 'Enter' && addPerson()}
-                  />
-                  <input
-                    type="text"
-                    value={newPersonRelationship}
-                    onChange={(e) => setNewPersonRelationship(e.target.value)}
-                    placeholder="Relationship (optional)"
-                    className="person-relationship-input"
-                    onKeyPress={(e) => e.key === 'Enter' && addPerson()}
-                  />
-                  <button 
-                    type="button"
-                    onClick={addPerson}
-                    className="btn btn-secondary btn-small"
-                    disabled={!newPersonName.trim()}
-                  >
-                    Add Person
-                  </button>
+                  {peopleInputs.map((person, index) => (
+                    <div key={index} className="person-input-group">
+                      <h4>Person {index + 1} {index === 0 && <span className="required">*</span>}</h4>
+                      <div className="input-fields">
+                        <input
+                          type="text"
+                          value={person.name}
+                          onChange={(e) => updatePersonInput(index, 'name', e.target.value)}
+                          placeholder={index === 0 ? "Person's name (required)" : "Person's name (optional)"}
+                          className="person-name-input"
+                        />
+                        <input
+                          type="text"
+                          value={person.relationship}
+                          onChange={(e) => updatePersonInput(index, 'relationship', e.target.value)}
+                          placeholder="Relationship (e.g., bride, best friend)"
+                          className="person-relationship-input"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               
-              {speechData.people.length > 0 && (
-                <div className="people-list">
+              {peopleInputs.some(p => p.name.trim() !== '') && (
+                <div className="people-preview">
                   <h4>People in your speech:</h4>
-                  {speechData.people.map((person) => (
-                    <div key={person.id} className="person-item">
-                      <span className="person-name">{person.name}</span>
-                      {person.relationship && (
-                        <span className="person-relationship">({person.relationship})</span>
-                      )}
-                      <button
-                        onClick={() => removePerson(person.id)}
-                        className="btn btn-danger btn-small"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
+                  <div className="people-preview-list">
+                    {peopleInputs
+                      .filter(p => p.name.trim() !== '')
+                      .map((person, index) => (
+                        <div key={index} className="person-preview-item">
+                          <span className="person-name">{person.name}</span>
+                          {person.relationship && (
+                            <span className="person-relationship">({person.relationship})</span>
+                          )}
+                        </div>
+                      ))}
+                  </div>
                 </div>
               )}
               
               <div className="help-text">
-                <small>💡 Tip: Add everyone you plan to mention in your speech. You'll be able to link specific stories and points to these people in the next step.</small>
+                <p>💡 <strong>Tip:</strong> At least one person is required. Include key people like the bride, groom, family members, or honorees.</p>
+                <p>🎯 <strong>Examples:</strong> "Sarah (bride)", "Michael (groom)", "Tom (best friend)", "Mom (mother)"</p>
+                <small>You'll be able to link specific stories and points to these people in the next step.</small>
               </div>
             </div>
           </div>
