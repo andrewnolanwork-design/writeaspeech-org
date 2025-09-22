@@ -293,9 +293,6 @@ const BuilderPage: React.FC = () => {
   };
 
   const getGuidanceText = () => {
-    const occasion = speechData.occasion || customOccasion;
-    const style = speechData.style;
-    
     if (currentStep === 6) { // Combined content step
       return "Choose from our suggested themes and story prompts, or add your own custom content. You can mix and match to create the perfect speech structure.";
     }
