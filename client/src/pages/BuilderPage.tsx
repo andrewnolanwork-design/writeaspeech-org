@@ -118,7 +118,7 @@ const BuilderPage: React.FC = () => {
         setSpeechData({ ...speechData, audience: audienceText });
       } else if (currentStep === 5) {
         // Convert people inputs to Person objects
-        const people = peopleInputs
+        const people: Person[] = peopleInputs
           .filter(p => p.name.trim() !== '')
           .map((p, index) => ({
             id: `person_${index}_${Date.now()}`,
