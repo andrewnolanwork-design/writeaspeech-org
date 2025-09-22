@@ -13,14 +13,14 @@ const PricingPage: React.FC = () => {
       {/* SEO Meta Tags */}
       <head>
         <title>Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans</title>
-        <meta name="description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99. Choose the perfect plan for your needs." />
+        <meta name="description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $19, or monthly subscription $9.99. Choose the perfect plan for your needs." />
         <meta name="keywords" content="speech writing pricing, AI speechwriter plans, free trial speech, pay per speech, monthly speech subscription" />
         <meta property="og:title" content="Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans" />
-        <meta property="og:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99." />
+        <meta property="og:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $19, or monthly subscription $9.99." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Pricing Plans - writeaspeech.org | Free Trial, Pay-Per-Speech & Monthly Plans" />
-        <meta name="twitter:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $24.99, or monthly subscription $9.99." />
+        <meta name="twitter:description" content="Flexible AI speech writing pricing: Free trial, pay-per-speech $19, or monthly subscription $9.99." />
         <link rel="canonical" href="https://writeaspeech.org/pricing" />
       </head>
 
@@ -131,10 +131,10 @@ const PricingPage: React.FC = () => {
                 <div className="tier-pricing">
                   <div className="price-display">
                     <span className="currency">$</span>
-                    <span className="amount">24.99</span>
+                    <span className="amount">19</span>
                     <div className="price-details">
                       <span className="period">per speech</span>
-                      <span className="savings">Save $475+ vs professional writers</span>
+                      <span className="savings">Save $480+ vs professional writers</span>
                     </div>
                   </div>
                 </div>
@@ -314,7 +314,7 @@ const PricingPage: React.FC = () => {
                       </td>
                       <td className="writeaspeech-cell highlighted">
                         <div className="cell-content winner">
-                          <span className="value">Free to $24.99</span>
+                          <span className="value">Free to $19</span>
                           <span className="badge">Flexible Options</span>
                         </div>
                       </td>

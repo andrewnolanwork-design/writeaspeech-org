@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { generateSpeech } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import PaymentModal from '../components/payment/PaymentModal';
-import type { SpeechData } from '../api';
+import type { SpeechData, KeyPoint, PersonalStory, Person } from '../api/speech';
 
 // Using SpeechData interface from API
 
@@ -27,6 +27,7 @@ const BuilderPage: React.FC = () => {
     style: '',
     length: '',
     audience: '',
+    people: [],
     key_points: [],
     personal_stories: []
   });
@@ -34,6 +35,12 @@ const BuilderPage: React.FC = () => {
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
   const [customAudience, setCustomAudience] = useState('');
   const [customOccasion, setCustomOccasion] = useState('');
+  
+  // State for managing dynamic content
+  const [newPersonName, setNewPersonName] = useState('');
+  const [newPersonRelationship, setNewPersonRelationship] = useState('');
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [selectedStoryPrompts, setSelectedStoryPrompts] = useState<string[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,8 +60,8 @@ const BuilderPage: React.FC = () => {
     },
     premium: {
       name: 'Pay-Per-Speech',
-      price: '$24.99',
-      buttonText: 'Generate My Speech - $24.99',
+      price: '$19',
+      buttonText: 'Generate My Speech - $19',
       description: 'Complete unlimited-length speech with all features'
     },
     subscription: {
@@ -75,7 +82,7 @@ const BuilderPage: React.FC = () => {
     }
   }, []);
 
-  const totalSteps = 7; // Increased from 5 to 7 steps
+  const totalSteps = 8; // Increased to accommodate people step and combined content step
 
   // Function to display generated speech content
   const displayGeneratedSpeech = (speech: any) => {
@@ -89,9 +96,10 @@ const BuilderPage: React.FC = () => {
       case 2: return speechData.style !== '';
       case 3: return speechData.length !== '';
       case 4: return selectedAudiences.length > 0 || customAudience.trim() !== '';
-      case 5: return speechData.key_points.length > 0;
-      case 6: return true; // Personal stories optional
+      case 5: return speechData.people.length > 0; // At least one person required
+      case 6: return speechData.key_points.length > 0 || speechData.personal_stories.length > 0; // At least some content
       case 7: return true; // Review step
+      case 8: return true; // Final review step
       default: return false;
     }
   };
@@ -117,28 +125,179 @@ const BuilderPage: React.FC = () => {
     );
   };
 
+  // Helper functions for managing people
+  const addPerson = () => {
+    if (newPersonName.trim()) {
+      const newPerson: Person = {
+        id: Date.now().toString(),
+        name: newPersonName.trim(),
+        relationship: newPersonRelationship.trim() || undefined
+      };
+      setSpeechData(prev => ({
+        ...prev,
+        people: [...prev.people, newPerson]
+      }));
+      setNewPersonName('');
+      setNewPersonRelationship('');
+    }
+  };
+
+  const removePerson = (personId: string) => {
+    setSpeechData(prev => ({
+      ...prev,
+      people: prev.people.filter(p => p.id !== personId),
+      // Also remove this person from any linked points/stories
+      key_points: prev.key_points.map(kp => ({
+        ...kp,
+        linkedPeople: kp.linkedPeople.filter(id => id !== personId)
+      })),
+      personal_stories: prev.personal_stories.map(ps => ({
+        ...ps,
+        linkedPeople: ps.linkedPeople.filter(id => id !== personId)
+      }))
+    }));
+  };
+
+  // Helper functions for managing key points
+  const addKeyPoint = (text: string, isFromTheme: boolean = false) => {
+    if (text.trim()) {
+      const newKeyPoint: KeyPoint = {
+        id: Date.now().toString(),
+        text: text.trim(),
+        detail: '',
+        linkedPeople: []
+      };
+      setSpeechData(prev => ({
+        ...prev,
+        key_points: [...prev.key_points, newKeyPoint]
+      }));
+      
+      if (isFromTheme) {
+        setSelectedThemes(prev => [...prev, text]);
+      }
+    }
+  };
+
+  const updateKeyPoint = (pointId: string, updates: Partial<KeyPoint>) => {
+    setSpeechData(prev => ({
+      ...prev,
+      key_points: prev.key_points.map(kp => 
+        kp.id === pointId ? { ...kp, ...updates } : kp
+      )
+    }));
+  };
+
+  const removeKeyPoint = (pointId: string) => {
+    setSpeechData(prev => ({
+      ...prev,
+      key_points: prev.key_points.filter(kp => kp.id !== pointId)
+    }));
+  };
+
+  // Helper functions for managing personal stories
+  const addPersonalStory = (text: string, isFromPrompt: boolean = false) => {
+    if (text.trim()) {
+      const newStory: PersonalStory = {
+        id: Date.now().toString(),
+        text: text.trim(),
+        detail: '',
+        linkedPeople: []
+      };
+      setSpeechData(prev => ({
+        ...prev,
+        personal_stories: [...prev.personal_stories, newStory]
+      }));
+      
+      if (isFromPrompt) {
+        setSelectedStoryPrompts(prev => [...prev, text]);
+      }
+    }
+  };
+
+  const updatePersonalStory = (storyId: string, updates: Partial<PersonalStory>) => {
+    setSpeechData(prev => ({
+      ...prev,
+      personal_stories: prev.personal_stories.map(ps => 
+        ps.id === storyId ? { ...ps, ...updates } : ps
+      )
+    }));
+  };
+
+  const removePersonalStory = (storyId: string) => {
+    setSpeechData(prev => ({
+      ...prev,
+      personal_stories: prev.personal_stories.filter(ps => ps.id !== storyId)
+    }));
+  };
+
+  // Helper functions for getting theme and story suggestions based on occasion and style
+  const getThemeSuggestions = () => {
+    const occasion = speechData.occasion || customOccasion;
+    const style = speechData.style;
+    
+    const themes: Record<string, Record<string, string[]>> = {
+      'Wedding': {
+        'Heartfelt': ['Love story', 'Friendship journey', 'Future hopes', 'Family bonds', 'Shared values', 'Perfect match'],
+        'Witty': ['Funny habits', 'Dating disasters', 'Couple quirks', 'Inside jokes', 'Wedding planning chaos', 'Perfect imperfections'],
+        'Formal': ['Character testimonial', 'Shared achievements', 'Professional respect', 'Life partnership', 'Family honor'],
+        'Inspiring': ['Overcoming challenges', 'Growing together', 'Dreams achieved', 'Love conquers all', 'Future possibilities']
+      },
+      'Birthday': {
+        'Heartfelt': ['Cherished memories', 'Personal growth', 'Life impact', 'Friendship bonds', 'Special qualities', 'Grateful moments'],
+        'Witty': ['Age jokes', 'Embarrassing moments', 'Funny habits', 'Life adventures', 'Getting older gracefully', 'Birthday traditions'],
+        'Formal': ['Professional achievements', 'Personal milestones', 'Character appreciation', 'Life contributions'],
+        'Inspiring': ['Life lessons', 'Dreams pursued', 'Challenges overcome', 'Future goals', 'Personal evolution']
+      },
+      'Retirement': {
+        'Heartfelt': ['Career dedication', 'Mentorship impact', 'Work family', 'Legacy created', 'Personal sacrifices', 'Well-deserved rest'],
+        'Witty': ['Work stories', 'Office characters', 'Technology struggles', 'Meeting humor', 'Workplace quirks'],
+        'Formal': ['Professional accomplishments', 'Industry contributions', 'Leadership examples', 'Institutional knowledge'],
+        'Inspiring': ['Career journey', 'Achievements unlocked', 'New adventures', 'Wisdom shared', 'Future possibilities']
+      }
+    };
+    
+    return themes[occasion]?.[style] || themes['Birthday']['Heartfelt'];
+  };
+
+  const getStoryPrompts = () => {
+    const occasion = speechData.occasion || customOccasion;
+    
+    const prompts: Record<string, string[]> = {
+      'Wedding': [
+        'How you first met the couple',
+        'When you knew they were perfect for each other',
+        'A funny dating story',
+        'Their most romantic moment',
+        'Wedding planning adventures',
+        'Why they make each other better'
+      ],
+      'Birthday': [
+        'Your favorite memory together',
+        'When they helped you through tough times',
+        'A funny adventure you shared',
+        'How they surprised you',
+        'Their most embarrassing moment',
+        'When they showed their true character'
+      ],
+      'Retirement': [
+        'Your first day working together',
+        'A challenging project you tackled',
+        'Their most helpful advice',
+        'A funny work situation',
+        'How they mentored others',
+        'Their lasting impact on the workplace'
+      ]
+    };
+    
+    return prompts[occasion] || prompts['Birthday'];
+  };
+
   const getGuidanceText = () => {
     const occasion = speechData.occasion || customOccasion;
     const style = speechData.style;
     
-    if (currentStep === 5) { // Key points
-      if (occasion.toLowerCase().includes('wedding')) {
-        return style === 'Heartfelt' 
-          ? "Share meaningful moments, how you know the couple, what makes their relationship special, and your hopes for their future together."
-          : "Include funny stories about the couple, embarrassing moments (keep it light!), and witty observations about their relationship.";
-      } else if (occasion.toLowerCase().includes('retirement')) {
-        return "Highlight career achievements, memorable moments working together, their impact on colleagues, and what they'll be missed for.";
-      } else if (occasion.toLowerCase().includes('birthday')) {
-        return "Share favorite memories, what makes them special, achievements you're proud of, and hopes for the year ahead.";
-      }
-      return "What are the main messages you want to convey? Think about why this person/occasion is important and what you want people to remember.";
-    } else if (currentStep === 6) { // Personal stories
-      if (occasion.toLowerCase().includes('wedding')) {
-        return "Share a story about how you met the couple, a funny moment from your friendship, or something that shows their character.";
-      } else if (occasion.toLowerCase().includes('retirement')) {
-        return "Tell a story that captures their work personality, a project you worked on together, or a moment that defines them professionally.";
-      }
-      return "Think of a specific moment or anecdote that illustrates your relationship with them or shows their character.";
+    if (currentStep === 6) { // Combined content step
+      return "Choose from our suggested themes and story prompts, or add your own custom content. You can mix and match to create the perfect speech structure.";
     }
     return "";
   };
@@ -327,23 +486,61 @@ const BuilderPage: React.FC = () => {
       case 5:
         return (
           <div className="step-content">
-            <h2>What key points do you want to include?</h2>
-            <div className="guidance-text">
-              <p>{getGuidanceText()}</p>
-            </div>
-            <div className="key-points-section">
-              <textarea
-                className="key-points-input"
-                value={speechData.key_points.join('\n')}
-                onChange={(e) => setSpeechData({ 
-                  ...speechData, 
-                  key_points: e.target.value.split('\n').filter(point => point.trim() !== '') 
-                })}
-                placeholder="Enter your key points... (one per line)"
-                rows={8}
-              />
+            <h2>Who will your speech be about?</h2>
+            <p>Add the names of people you'll be speaking about in your speech</p>
+            
+            <div className="people-section">
+              <div className="add-person-form">
+                <div className="input-row">
+                  <input
+                    type="text"
+                    value={newPersonName}
+                    onChange={(e) => setNewPersonName(e.target.value)}
+                    placeholder="Person's name"
+                    className="person-name-input"
+                    onKeyPress={(e) => e.key === 'Enter' && addPerson()}
+                  />
+                  <input
+                    type="text"
+                    value={newPersonRelationship}
+                    onChange={(e) => setNewPersonRelationship(e.target.value)}
+                    placeholder="Relationship (optional)"
+                    className="person-relationship-input"
+                    onKeyPress={(e) => e.key === 'Enter' && addPerson()}
+                  />
+                  <button 
+                    type="button"
+                    onClick={addPerson}
+                    className="btn btn-secondary btn-small"
+                    disabled={!newPersonName.trim()}
+                  >
+                    Add Person
+                  </button>
+                </div>
+              </div>
+              
+              {speechData.people.length > 0 && (
+                <div className="people-list">
+                  <h4>People in your speech:</h4>
+                  {speechData.people.map((person) => (
+                    <div key={person.id} className="person-item">
+                      <span className="person-name">{person.name}</span>
+                      {person.relationship && (
+                        <span className="person-relationship">({person.relationship})</span>
+                      )}
+                      <button
+                        onClick={() => removePerson(person.id)}
+                        className="btn btn-danger btn-small"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
               <div className="help-text">
-                <small>💡 Tip: Add each main point on a separate line. We'll help you develop these into compelling content.</small>
+                <small>💡 Tip: Add everyone you plan to mention in your speech. You'll be able to link specific stories and points to these people in the next step.</small>
               </div>
             </div>
           </div>
@@ -352,29 +549,245 @@ const BuilderPage: React.FC = () => {
       case 6:
         return (
           <div className="step-content">
-            <h2>Personal Stories (Optional)</h2>
+            <h2>Let's Build Your Speech Content</h2>
             <div className="guidance-text">
               <p>{getGuidanceText()}</p>
             </div>
-            <div className="personal-stories-section">
-              <textarea
-                className="personal-stories-input"
-                value={speechData.personal_stories.join('\n')}
-                onChange={(e) => setSpeechData({ 
-                  ...speechData, 
-                  personal_stories: e.target.value.split('\n').filter(story => story.trim() !== '') 
-                })}
-                placeholder="Share personal anecdotes or stories... (one per line)"
-                rows={6}
-              />
-              <div className="help-text">
-                <small>💡 Personal stories make speeches memorable. Even one good story can make a big impact!</small>
+            
+            <div className="content-builder">
+              {/* Key Themes Section */}
+              <div className="section-group">
+                <h3>🎯 Key Themes</h3>
+                <p>Select themes that resonate with your speech, or add your own:</p>
+                
+                <div className="theme-suggestions">
+                  {getThemeSuggestions().map((theme) => (
+                    <button
+                      key={theme}
+                      className={`theme-suggestion ${selectedThemes.includes(theme) ? 'selected' : ''}`}
+                      onClick={() => {
+                        if (selectedThemes.includes(theme)) {
+                          setSelectedThemes(prev => prev.filter(t => t !== theme));
+                          // Remove from key points if it was added from theme
+                          const themePoint = speechData.key_points.find(kp => kp.text === theme);
+                          if (themePoint) {
+                            removeKeyPoint(themePoint.id);
+                          }
+                        } else {
+                          addKeyPoint(theme, true);
+                        }
+                      }}
+                    >
+                      {theme}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Custom theme input */}
+                <div className="custom-input-section">
+                  <input
+                    type="text"
+                    placeholder="Add your own theme or key point..."
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                        addKeyPoint(e.currentTarget.value);
+                        e.currentTarget.value = '';
+                      }
+                    }}
+                    className="custom-theme-input"
+                  />
+                </div>
               </div>
+
+              {/* Story Prompts Section */}
+              <div className="section-group">
+                <h3>📖 Story Ideas</h3>
+                <p>Choose story prompts that inspire you, or add your own stories:</p>
+                
+                <div className="story-suggestions">
+                  {getStoryPrompts().map((prompt) => (
+                    <button
+                      key={prompt}
+                      className={`story-suggestion ${selectedStoryPrompts.includes(prompt) ? 'selected' : ''}`}
+                      onClick={() => {
+                        if (selectedStoryPrompts.includes(prompt)) {
+                          setSelectedStoryPrompts(prev => prev.filter(p => p !== prompt));
+                          // Remove from personal stories if it was added from prompt
+                          const promptStory = speechData.personal_stories.find(ps => ps.text === prompt);
+                          if (promptStory) {
+                            removePersonalStory(promptStory.id);
+                          }
+                        } else {
+                          addPersonalStory(prompt, true);
+                        }
+                      }}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Custom story input */}
+                <div className="custom-input-section">
+                  <input
+                    type="text"
+                    placeholder="Add your own story idea..."
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                        addPersonalStory(e.currentTarget.value);
+                        e.currentTarget.value = '';
+                      }
+                    }}
+                    className="custom-story-input"
+                  />
+                </div>
+              </div>
+
+              {/* Added Content Summary */}
+              {(speechData.key_points.length > 0 || speechData.personal_stories.length > 0) && (
+                <div className="content-summary">
+                  <h4>📝 Your Speech Elements</h4>
+                  
+                  {speechData.key_points.length > 0 && (
+                    <div className="summary-section">
+                      <h5>Key Points & Themes:</h5>
+                      {speechData.key_points.map((point) => (
+                        <div key={point.id} className="content-item">
+                          <span className="content-text">{point.text}</span>
+                          <button
+                            onClick={() => removeKeyPoint(point.id)}
+                            className="btn btn-danger btn-tiny"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {speechData.personal_stories.length > 0 && (
+                    <div className="summary-section">
+                      <h5>Stories & Anecdotes:</h5>
+                      {speechData.personal_stories.map((story) => (
+                        <div key={story.id} className="content-item">
+                          <span className="content-text">{story.text}</span>
+                          <button
+                            onClick={() => removePersonalStory(story.id)}
+                            className="btn btn-danger btn-tiny"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         );
 
       case 7:
+        return (
+          <div className="step-content">
+            <h2>Add Details & Link to People</h2>
+            <p>Add more detail to your themes and stories, and link them to specific people:</p>
+            
+            <div className="detail-editor">
+              {/* Key Points Detail Editor */}
+              {speechData.key_points.length > 0 && (
+                <div className="section-group">
+                  <h3>🎯 Refine Your Key Points</h3>
+                  {speechData.key_points.map((point) => (
+                    <div key={point.id} className="content-detail-item">
+                      <div className="content-header">
+                        <strong>{point.text}</strong>
+                      </div>
+                      <div className="detail-inputs">
+                        <textarea
+                          value={point.detail}
+                          onChange={(e) => updateKeyPoint(point.id, { detail: e.target.value })}
+                          placeholder="Add more details about this point... (optional)"
+                          className="detail-textarea"
+                          rows={2}
+                        />
+                        <div className="people-linking">
+                          <label>Link to people:</label>
+                          <div className="people-checkboxes">
+                            {speechData.people.map((person) => (
+                              <label key={person.id} className="person-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={point.linkedPeople.includes(person.id)}
+                                  onChange={(e) => {
+                                    const linkedPeople = e.target.checked
+                                      ? [...point.linkedPeople, person.id]
+                                      : point.linkedPeople.filter(id => id !== person.id);
+                                    updateKeyPoint(point.id, { linkedPeople });
+                                  }}
+                                />
+                                {person.name}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Personal Stories Detail Editor */}
+              {speechData.personal_stories.length > 0 && (
+                <div className="section-group">
+                  <h3>📖 Develop Your Stories</h3>
+                  {speechData.personal_stories.map((story) => (
+                    <div key={story.id} className="content-detail-item">
+                      <div className="content-header">
+                        <strong>{story.text}</strong>
+                      </div>
+                      <div className="detail-inputs">
+                        <textarea
+                          value={story.detail}
+                          onChange={(e) => updatePersonalStory(story.id, { detail: e.target.value })}
+                          placeholder="Tell us more about this story... (optional)"
+                          className="detail-textarea"
+                          rows={3}
+                        />
+                        <div className="people-linking">
+                          <label>Link to people:</label>
+                          <div className="people-checkboxes">
+                            {speechData.people.map((person) => (
+                              <label key={person.id} className="person-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={story.linkedPeople.includes(person.id)}
+                                  onChange={(e) => {
+                                    const linkedPeople = e.target.checked
+                                      ? [...story.linkedPeople, person.id]
+                                      : story.linkedPeople.filter(id => id !== person.id);
+                                    updatePersonalStory(story.id, { linkedPeople });
+                                  }}
+                                />
+                                {person.name}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              <div className="help-text">
+                <small>💡 The more details you provide, the more personalized your speech will be. Linking content to specific people helps create more targeted and meaningful stories.</small>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 8:
         return (
           <div className="step-content">
             <h2>Review Your Speech Details</h2>
@@ -411,6 +824,9 @@ const BuilderPage: React.FC = () => {
               </div>
               <div className="summary-item">
                 <strong>Audience:</strong> {[...selectedAudiences, customAudience].filter(Boolean).join(', ')}
+              </div>
+              <div className="summary-item">
+                <strong>People:</strong> {speechData.people.map(p => p.name).join(', ') || 'None specified'}
               </div>
               <div className="summary-item">
                 <strong>Key Points:</strong> {speechData.key_points.length} points added

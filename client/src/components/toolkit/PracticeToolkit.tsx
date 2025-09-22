@@ -7,6 +7,7 @@ interface PracticeToolkitProps {
   speechContent: string;
   speechTitle: string;
   onClose: () => void;
+  fullscreen?: boolean;
 }
 
 type ToolkitMode = 'menu' | 'teleprompter' | 'pacing' | 'recorder';
@@ -14,7 +15,8 @@ type ToolkitMode = 'menu' | 'teleprompter' | 'pacing' | 'recorder';
 const PracticeToolkit: React.FC<PracticeToolkitProps> = ({ 
   speechContent, 
   speechTitle, 
-  onClose 
+  onClose,
+  fullscreen = false
 }) => {
   const [currentMode, setCurrentMode] = useState<ToolkitMode>('menu');
 
@@ -55,7 +57,7 @@ const PracticeToolkit: React.FC<PracticeToolkitProps> = ({
 
   // Main menu
   return (
-    <div className="toolkit-overlay">
+    <div className={`toolkit-overlay ${fullscreen ? 'fullscreen' : ''}`}>
       <div className="toolkit-container">
         <div className="toolkit-header">
           <h2>🎯 Practice Toolkit</h2>

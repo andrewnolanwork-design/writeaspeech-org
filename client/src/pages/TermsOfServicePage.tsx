@@ -82,16 +82,16 @@ const TermsOfServicePage: React.FC = () => {
                 <h3 className="toc-title">Quick Navigation</h3>
                 <div className="terms-summary">
                   <div className="summary-item">
+                    <span className="summary-icon">🎁</span>
+                    <span>Free trial available</span>
+                  </div>
+                  <div className="summary-item">
                     <span className="summary-icon">💰</span>
-                    <span>One-time payment: $19</span>
+                    <span>Pay-per-speech: $19</span>
                   </div>
                   <div className="summary-item">
-                    <span className="summary-icon">🛡️</span>
-                    <span>30-day money-back guarantee</span>
-                  </div>
-                  <div className="summary-item">
-                    <span className="summary-icon">✅</span>
-                    <span>Lifetime access included</span>
+                    <span className="summary-icon">📅</span>
+                    <span>Monthly subscription: $9.99</span>
                   </div>
                 </div>
               </div>
@@ -126,10 +126,11 @@ const TermsOfServicePage: React.FC = () => {
                   <div className="highlight-card">
                     <h3>💰 Payment & Access</h3>
                     <ul className="feature-list">
-                      <li><span className="list-icon">✓</span>One-time payment of $19 for lifetime access</li>
+                      <li><span className="list-icon">✓</span>Free trial: Create short speeches with watermarks</li>
+                      <li><span className="list-icon">✓</span>Pay-per-speech: $19 for complete unlimited-length speeches</li>
+                      <li><span className="list-icon">✓</span>Monthly subscription: $9.99/month for 5 speeches monthly</li>
                       <li><span className="list-icon">✓</span>Secure payment processing through Stripe</li>
-                      <li><span className="list-icon">✓</span>Immediate access to all features upon payment</li>
-                      <li><span className="list-icon">✓</span>No recurring charges or hidden fees</li>
+                      <li><span className="list-icon">✓</span>Immediate access upon payment</li>
                     </ul>
                   </div>
                   
@@ -144,12 +145,12 @@ const TermsOfServicePage: React.FC = () => {
                   </div>
                   
                   <div className="highlight-card">
-                    <h3>🛡️ Our Guarantee</h3>
+                    <h3>🛡️ Our Commitment</h3>
                     <ul className="feature-list">
-                      <li><span className="list-icon">✓</span>30-day money-back guarantee</li>
                       <li><span className="list-icon">✓</span>Professional AI-powered speech generation</li>
-                      <li><span className="list-icon">✓</span>Reliable service and support</li>
-                      <li><span className="list-icon">✓</span>Regular updates and improvements</li>
+                      <li><span className="list-icon">✓</span>Reliable service and customer support</li>
+                      <li><span className="list-icon">✓</span>Regular updates and feature improvements</li>
+                      <li><span className="list-icon">✓</span>Secure and private handling of your content</li>
                     </ul>
                   </div>
                 </div>

@@ -57,6 +57,7 @@ async function generateSpeech({
   style,
   length,
   audience,
+  people = [],
   key_points = [],
   personal_stories = [],
   additionalContext = ''
@@ -67,6 +68,7 @@ async function generateSpeech({
       style,
       length,
       audience,
+      people,
       key_points,
       personal_stories,
       additionalContext
@@ -115,12 +117,79 @@ function createSpeechPrompt({
   style,
   length,
   audience,
+  people,
   key_points,
   personal_stories,
   additionalContext
 }) {
   const wordCount = getWordCount(length);
   const styleGuidelines = getStyleGuidelines(style);
+
+  // Helper function to format people names with relationships
+  const formatPeople = (people) => {
+    if (!people || people.length === 0) return 'No specific people mentioned';
+    return people.map(person => 
+      person.relationship 
+        ? `${person.name} (${person.relationship})`
+        : person.name
+    ).join(', ');
+  };
+
+  // Helper function to format key points with linked people and details
+  const formatKeyPoints = (key_points, people) => {
+    if (!key_points || key_points.length === 0) {
+      return 'No specific key points provided - create compelling content based on other parameters.';
+    }
+    
+    return key_points.map(point => {
+      let formattedPoint = `• ${point.text}`;
+      
+      if (point.detail && point.detail.trim()) {
+        formattedPoint += `\n  Details: ${point.detail}`;
+      }
+      
+      if (point.linkedPeople && point.linkedPeople.length > 0) {
+        const linkedNames = point.linkedPeople
+          .map(personId => people.find(p => p.id === personId))
+          .filter(Boolean)
+          .map(person => person.name)
+          .join(', ');
+        if (linkedNames) {
+          formattedPoint += `\n  Related to: ${linkedNames}`;
+        }
+      }
+      
+      return formattedPoint;
+    }).join('\n\n');
+  };
+
+  // Helper function to format personal stories with linked people and details
+  const formatPersonalStories = (personal_stories, people) => {
+    if (!personal_stories || personal_stories.length === 0) {
+      return 'No specific personal stories provided - you may create plausible, positive scenarios that fit the theme if needed.';
+    }
+    
+    return personal_stories.map((story, index) => {
+      let formattedStory = `${index + 1}. ${story.text}`;
+      
+      if (story.detail && story.detail.trim()) {
+        formattedStory += `\n   Details: ${story.detail}`;
+      }
+      
+      if (story.linkedPeople && story.linkedPeople.length > 0) {
+        const linkedNames = story.linkedPeople
+          .map(personId => people.find(p => p.id === personId))
+          .filter(Boolean)
+          .map(person => person.name)
+          .join(', ');
+        if (linkedNames) {
+          formattedStory += `\n   About: ${linkedNames}`;
+        }
+      }
+      
+      return formattedStory;
+    }).join('\n\n');
+  };
 
   let prompt = `USER SPECIFICATIONS
 1. Occasion: ${occasion}
@@ -133,22 +202,26 @@ Target Word Count: ${wordCount} words
 4. Audience: ${audience}
 Tailor the language, jokes, and references to be perfectly understandable and relatable for this specific group.
 
-5. Key Points to Include:
-${key_points.length > 0 ? key_points.map(point => `• ${point}`).join('\n') : 'No specific key points provided - create compelling content based on other parameters.'}
+5. People to Mention in Speech:
+${formatPeople(people)}
+Use these names throughout the speech and personalize the content based on their relationships to you.
 
-6. Personal Stories to Weave In${personal_stories.length > 0 ? ':' : ' (if provided):'}
-${personal_stories.length > 0 ? personal_stories.map((story, index) => `${index + 1}. ${story}`).join('\n') : 'No specific personal stories provided - you may create plausible, positive scenarios that fit the theme if needed.'}`;
+6. Key Points to Include:
+${formatKeyPoints(key_points, people)}
+
+7. Personal Stories to Weave In:
+${formatPersonalStories(personal_stories, people)}`;
 
   if (additionalContext) {
     prompt += `
 
-7. Additional Context:
+8. Additional Context:
 ${additionalContext}`;
   }
 
   prompt += `
 
-Final Check: Before generating, review all specifications. The final output must be only the text of the speech, ready to be read aloud. It must meet the word count, match the tone, and seamlessly integrate all the required content.`;
+Final Check: Before generating, review all specifications. The final output must be only the text of the speech, ready to be read aloud. It must meet the word count, match the tone, and seamlessly integrate all the required content. Make sure to use the specific names provided and incorporate the linked people into the relevant stories and key points.`;
 
   return prompt;
 }
@@ -348,6 +421,7 @@ function generateEnhancedMockSpeechFromPrompt(userMessage, systemMessage) {
     length,
     audience,
     wordCount,
+    people: [], // Extract people from new format if needed
     key_points: keyPoints,
     personal_stories: stories
   });
@@ -356,7 +430,7 @@ function generateEnhancedMockSpeechFromPrompt(userMessage, systemMessage) {
 /**
  * Generate a professional, high-quality mock speech that follows the enhanced prompt template
  */
-function generateProfessionalMockSpeech({ occasion, style, length, audience, wordCount, key_points = [], personal_stories = [] }) {
+function generateProfessionalMockSpeech({ occasion, style, length, audience, wordCount, people = [], key_points = [], personal_stories = [] }) {
   // Generate a complete, high-quality speech following the enhanced template
   console.log('🎤 Generating professional mock speech:', { occasion, style, length, key_points, personal_stories });
   

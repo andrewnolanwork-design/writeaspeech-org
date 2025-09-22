@@ -60,7 +60,7 @@ const HelpPage: React.FC = () => {
       {
         id: 9,
         question: "How much does writeaspeech.org cost?",
-        answer: "We offer three flexible pricing options: Free Trial (short speeches with watermarks), Pay-Per-Speech ($24.99 for premium full-length speeches), and Monthly Subscription ($9.99/month for 5 speeches monthly). Choose what works best for your needs!"
+        answer: "We offer three flexible pricing options: Free Trial (short speeches with watermarks), Pay-Per-Speech ($19 for premium full-length speeches), and Monthly Subscription ($9.99/month for 5 speeches monthly). Choose what works best for your needs!"
       },
       {
         id: 10,

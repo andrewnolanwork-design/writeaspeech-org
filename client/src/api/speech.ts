@@ -1,12 +1,33 @@
 import { apiGet, apiPost, apiPut, apiDelete } from './config';
 
+export interface KeyPoint {
+  id: string;
+  text: string;
+  detail: string;
+  linkedPeople: string[];
+}
+
+export interface PersonalStory {
+  id: string;
+  text: string;
+  detail: string;
+  linkedPeople: string[];
+}
+
+export interface Person {
+  id: string;
+  name: string;
+  relationship?: string;
+}
+
 export interface SpeechData {
   occasion: string;
   style: string;
   length: string;
   audience: string;
-  key_points: string[];
-  personal_stories: string[];
+  people: Person[];
+  key_points: KeyPoint[];
+  personal_stories: PersonalStory[];
   additionalContext?: string;
 }
 
@@ -18,8 +39,9 @@ export interface Speech {
   style: string;
   length: string;
   audience: string;
-  key_points: string[];
-  personal_stories: string[];
+  people: Person[];
+  key_points: KeyPoint[];
+  personal_stories: PersonalStory[];
   content?: string;
   status: 'draft' | 'generating' | 'completed' | 'error';
   wordCount?: number;
@@ -69,6 +91,11 @@ export async function updateSpeech(
 // Delete a speech
 export async function deleteSpeech(speechId: string): Promise<{ message: string }> {
   return apiDelete<{ message: string }>(`/speech/${speechId}`);
+}
+
+// Save a speech to user's collection
+export async function saveSpeech(speechId: string, userId?: string): Promise<{ success: boolean; speech: Speech }> {
+  return apiPost<{ success: boolean; speech: Speech }>(`/speech/save/${speechId}`, { userId });
 }
 
 // Calculate estimated duration from word count

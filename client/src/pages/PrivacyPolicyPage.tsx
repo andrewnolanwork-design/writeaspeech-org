@@ -37,11 +37,6 @@ const PrivacyPolicyPage: React.FC = () => {
   const tableOfContents = [
     { id: 'information-collect', title: 'Information We Collect', icon: '📊' },
     { id: 'how-we-use', title: 'How We Use Information', icon: '🎯' },
-    { id: 'information-sharing', title: 'Information Sharing', icon: '🤝' },
-    { id: 'data-security', title: 'Data Security', icon: '🔒' },
-    { id: 'your-rights', title: 'Your Rights', icon: '⚖️' },
-    { id: 'cookies', title: 'Cookies & Tracking', icon: '🍪' },
-    { id: 'updates', title: 'Policy Updates', icon: '📝' },
     { id: 'contact', title: 'Contact Us', icon: '📧' }
   ];
 

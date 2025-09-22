@@ -18,6 +18,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import RefundPolicyPage from './pages/RefundPolicyPage';
 import SpeechViewerPage from './pages/SpeechViewerPage';
+import PracticePage from './pages/PracticePage';
 
 // Auth Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -83,6 +84,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <SpeechViewerPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/practice/:speechId" 
+              element={
+                <ProtectedRoute>
+                  <PracticePage />
                 </ProtectedRoute>
               } 
             />

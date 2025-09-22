@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getSpeech } from '../api/speech';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getSpeech, saveSpeech } from '../api/speech';
 import type { Speech } from '../api/speech';
+import { SpeechExporter, type SpeechExportData } from '../utils/exportUtils';
+import PremiumFeatureModal from '../components/common/PremiumFeatureModal';
+import { useAuth } from '../contexts/AuthContext';
 import './SpeechViewerPage.css';
 
 const SpeechViewerPage: React.FC = () => {
   const { speechId } = useParams<{ speechId: string }>();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
   
   const [speech, setSpeech] = useState<Speech | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFreeTrial, setIsFreeTrial] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingSection, setEditingSection] = useState<number | null>(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [premiumFeature, setPremiumFeature] = useState({ name: '', description: '', icon: '' });
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
   useEffect(() => {
     const loadSpeech = async () => {
@@ -41,17 +52,120 @@ const SpeechViewerPage: React.FC = () => {
     loadSpeech();
   }, [speechId]);
 
-  const handleExport = (format: 'pdf' | 'text' | 'cue-cards') => {
+  const handlePremiumFeatureClick = (featureName: string, featureDescription: string, featureIcon: string) => {
+    if (isFreeTrial) {
+      setPremiumFeature({ name: featureName, description: featureDescription, icon: featureIcon });
+      setShowPremiumModal(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleExport = async (format: 'pdf' | 'text' | 'word' | 'cue-cards') => {
     if (!speech) return;
     
-    // For now, just download as text
-    const element = document.createElement('a');
-    const file = new Blob([speech.content || ''], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `${speech.title || 'speech'}.${format === 'pdf' ? 'txt' : 'txt'}`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    if (!handlePremiumFeatureClick(
+      `Export ${format.toUpperCase()}`,
+      `Export your speech as a professional ${format} document with proper formatting and styling.`,
+      format === 'pdf' ? '📑' : format === 'word' ? '📘' : format === 'text' ? '📄' : '🗂️'
+    )) return;
+
+    try {
+      const exportData: SpeechExportData = {
+        title: speech.title || `${speech.occasion} Speech`,
+        content: speech.content || '',
+        metadata: {
+          occasion: speech.occasion,
+          wordCount: speech.wordCount || 0,
+          estimatedDuration: speech.estimatedDuration || '3-5 minutes',
+          audience: speech.audience,
+          style: speech.style,
+          createdAt: speech.createdAt,
+        },
+      };
+
+      switch (format) {
+        case 'word':
+          await SpeechExporter.exportToWord(exportData);
+          break;
+        case 'pdf':
+          await SpeechExporter.exportToPDF(exportData);
+          break;
+        case 'text':
+          await SpeechExporter.exportToText(exportData);
+          break;
+        case 'cue-cards':
+          await SpeechExporter.exportToCueCards(exportData);
+          break;
+      }
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Export failed. Please try again.');
+    }
+  };
+
+  const handlePracticeMode = () => {
+    if (!handlePremiumFeatureClick(
+      'Practice Mode',
+      'Access professional practice tools including teleprompter, pacing analysis, and audio recording.',
+      '🎯'
+    )) return;
+
+    navigate(`/practice/${speechId}`);
+  };
+
+  const handleEditSpeech = () => {
+    if (!handlePremiumFeatureClick(
+      'Edit Speech',
+      'Edit and regenerate sections of your speech with advanced AI assistance.',
+      '✏️'
+    )) return;
+
+    setIsEditing(true);
+  };
+
+  const handleSaveSpeech = async () => {
+    if (!handlePremiumFeatureClick(
+      'Save Speech',
+      'Save your speech to your personal dashboard for easy access and organization.',
+      '💾'
+    )) return;
+
+    if (!speechId) return;
+
+    setIsSaving(true);
+    try {
+      await saveSpeech(speechId, currentUser?.uid);
+      setShowSaveSuccess(true);
+      setTimeout(() => setShowSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Save failed:', error);
+      alert('Failed to save speech. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSectionHover = (sectionIndex: number, isHovering: boolean) => {
+    if (isEditing && isHovering) {
+      setEditingSection(sectionIndex);
+    } else if (!isHovering) {
+      setEditingSection(null);
+    }
+  };
+
+  const handleRegenerateSection = async (sectionIndex: number) => {
+    if (!speech) return;
+    
+    try {
+      // Here you would make an API call to regenerate the section
+      // For now, we'll simulate the regeneration
+      console.log(`Regenerating section ${sectionIndex}`);
+      alert('Section regeneration feature coming soon!');
+    } catch (error) {
+      console.error('Regeneration failed:', error);
+      alert('Failed to regenerate section. Please try again.');
+    }
   };
 
   if (isLoading) {
@@ -140,38 +254,72 @@ const SpeechViewerPage: React.FC = () => {
 
             <div className="speech-actions">
               <button 
-                onClick={() => handleExport('text')} 
-                className="action-btn export-btn"
-                disabled={isFreeTrial}
+                onClick={() => handleExport('word')} 
+                className={`action-btn export-btn ${isFreeTrial ? 'premium-feature' : ''}`}
+                title={isFreeTrial ? 'Premium Feature - Upgrade to access' : 'Export as Word document'}
               >
-                <span className="btn-icon">📄</span>
-                Export Text
+                <span className="btn-icon">📘</span>
+                Export Word
+                {isFreeTrial && <span className="premium-badge">Pro</span>}
               </button>
               <button 
                 onClick={() => handleExport('pdf')} 
-                className="action-btn export-btn"
-                disabled={isFreeTrial}
+                className={`action-btn export-btn ${isFreeTrial ? 'premium-feature' : ''}`}
+                title={isFreeTrial ? 'Premium Feature - Upgrade to access' : 'Export as PDF document'}
               >
                 <span className="btn-icon">📑</span>
                 Export PDF
+                {isFreeTrial && <span className="premium-badge">Pro</span>}
               </button>
-              <Link 
-                to={`/practice/${speechId}`} 
-                className="action-btn practice-btn"
+              <button 
+                onClick={handlePracticeMode}
+                className={`action-btn practice-btn ${isFreeTrial ? 'premium-feature' : ''}`}
+                title={isFreeTrial ? 'Premium Feature - Upgrade to access' : 'Open practice mode'}
               >
                 <span className="btn-icon">🎯</span>
                 Practice Mode
-              </Link>
-              {!isFreeTrial && (
-                <Link 
-                  to={`/builder?edit=${speechId}`} 
-                  className="action-btn edit-btn"
-                >
-                  <span className="btn-icon">✏️</span>
-                  Edit Speech
-                </Link>
-              )}
+                {isFreeTrial && <span className="premium-badge">Pro</span>}
+              </button>
+              <button 
+                onClick={handleEditSpeech}
+                className={`action-btn edit-btn ${isFreeTrial ? 'premium-feature' : ''}`}
+                title={isFreeTrial ? 'Premium Feature - Upgrade to access' : 'Edit speech content'}
+              >
+                <span className="btn-icon">✏️</span>
+                Edit Speech
+                {isFreeTrial && <span className="premium-badge">Pro</span>}
+              </button>
+              <button 
+                onClick={handleSaveSpeech}
+                className={`action-btn save-btn ${isFreeTrial ? 'premium-feature' : ''} ${isSaving ? 'loading' : ''}`}
+                disabled={isSaving}
+                title={isFreeTrial ? 'Premium Feature - Upgrade to access' : 'Save to My Speeches'}
+              >
+                <span className="btn-icon">{isSaving ? '⏳' : '💾'}</span>
+                {isSaving ? 'Saving...' : 'Save Speech'}
+                {isFreeTrial && <span className="premium-badge">Pro</span>}
+              </button>
             </div>
+
+            {showSaveSuccess && (
+              <div className="save-success-message">
+                <span className="success-icon">✅</span>
+                Speech saved to My Speeches!
+              </div>
+            )}
+
+            {isEditing && (
+              <div className="editing-notice">
+                <span className="edit-icon">✏️</span>
+                <span>Editing Mode: Hover over paragraphs to edit them</span>
+                <button 
+                  className="btn btn-small btn-secondary"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Exit Edit Mode
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
@@ -191,9 +339,40 @@ const SpeechViewerPage: React.FC = () => {
 
             <div className="speech-text">
               {speech.content?.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="speech-paragraph">
-                  {paragraph}
-                </p>
+                <div 
+                  key={index} 
+                  className={`speech-paragraph-container ${isEditing ? 'editable' : ''}`}
+                  onMouseEnter={() => handleSectionHover(index, true)}
+                  onMouseLeave={() => handleSectionHover(index, false)}
+                >
+                  <p className="speech-paragraph">
+                    {paragraph}
+                  </p>
+                  {isEditing && editingSection === index && (
+                    <div className="paragraph-edit-controls">
+                      <button 
+                        className="edit-control-btn"
+                        onClick={() => handleRegenerateSection(index)}
+                        title="Regenerate this section"
+                      >
+                        🔄 Regenerate
+                      </button>
+                      <button 
+                        className="edit-control-btn"
+                        onClick={() => {
+                          const newText = prompt('Edit this paragraph:', paragraph);
+                          if (newText && newText.trim()) {
+                            // Here you would update the paragraph
+                            console.log('Update paragraph:', newText);
+                          }
+                        }}
+                        title="Edit this section"
+                      >
+                        ✏️ Edit
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -241,6 +420,15 @@ const SpeechViewerPage: React.FC = () => {
             )}
           </div>
         </footer>
+
+        {/* Premium Feature Modal */}
+        <PremiumFeatureModal
+          isOpen={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          featureName={premiumFeature.name}
+          featureDescription={premiumFeature.description}
+          featureIcon={premiumFeature.icon}
+        />
       </div>
     </div>
   );

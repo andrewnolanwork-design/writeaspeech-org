@@ -148,7 +148,7 @@ const HomePage: React.FC = () => {
           <div className="contact-content">
             <div className="contact-info">
               <h3>Flexible Pricing for Every Need</h3>
-              <p>Choose from our <strong>Free Trial</strong>, <strong>Pay-Per-Speech ($24.99)</strong>, or <strong>Monthly Subscription ($9.99/month)</strong> options.</p>
+              <p>Choose from our <strong>Free Trial</strong>, <strong>Pay-Per-Speech ($19)</strong>, or <strong>Monthly Subscription ($9.99/month)</strong> options.</p>
               <div className="contact-details">
                 <p>✅ Start with a free trial speech</p>
                 <p>✅ Perfect single speeches for important events</p>

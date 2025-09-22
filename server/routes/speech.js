@@ -17,6 +17,7 @@ router.post('/generate', async (req, res) => {
       style, 
       length, 
       audience, 
+      people = [],
       key_points = [], 
       personal_stories = [],
       userId 
@@ -39,6 +40,7 @@ router.post('/generate', async (req, res) => {
       style,
       length,
       audience,
+      people,
       key_points,
       personal_stories,
       status: 'generating',
@@ -54,6 +56,7 @@ router.post('/generate', async (req, res) => {
         style,
         length,
         audience,
+        people,
         key_points,
         personal_stories
       });
@@ -65,6 +68,7 @@ router.post('/generate', async (req, res) => {
         style,
         length,
         audience,
+        people,
         key_points,
         personal_stories
       });
@@ -208,6 +212,46 @@ router.get('/:speechId', async (req, res) => {
 });
 
 /**
+ * POST /api/speech/save/:speechId
+ * Save speech to user's collection
+ */
+router.post('/save/:speechId', (req, res) => {
+  const { speechId } = req.params;
+  const { userId } = req.body;
+
+  console.log(`🔍 Save speech request - speechId: ${speechId}, userId: ${userId}`);
+
+  // Get the speech from storage
+  const speech = speechStorage.get(speechId);
+  
+  if (!speech) {
+    console.log(`❌ Speech not found: ${speechId}`);
+    return res.status(404).json({
+      success: false,
+      error: 'Speech not found'
+    });
+  }
+
+  // Update the speech to associate it with the user
+  const updatedSpeech = {
+    ...speech,
+    userId: userId || 'guest',
+    updatedAt: new Date().toISOString(),
+    status: 'completed'
+  };
+
+  speechStorage.set(speechId, updatedSpeech);
+
+  console.log(`✅ Speech saved successfully: ${speechId}`);
+  
+  res.json({
+    success: true,
+    message: 'Speech saved successfully',
+    speech: updatedSpeech
+  });
+});
+
+/**
  * PUT /api/speech/:speechId
  * Update a speech
  */
@@ -264,7 +308,7 @@ router.delete('/:speechId', async (req, res) => {
 /**
  * Helper function to generate realistic mock speech content
  */
-function generateMockSpeech({ occasion, style, audience, key_points = [], personal_stories = [] }) {
+function generateMockSpeech({ occasion, style, audience, people = [], key_points = [], personal_stories = [] }) {
   // Generate personalized, realistic speeches based on input
   let speech = "";
   
@@ -311,18 +355,47 @@ function generateMockSpeech({ occasion, style, audience, key_points = [], person
     }
     
     key_points.forEach((point, index) => {
-      speech += `${index + 1}. ${point} - This reminds me of the countless times I've witnessed this quality firsthand.\n\n`;
+      const pointText = typeof point === 'string' ? point : point.text;
+      const pointDetail = typeof point === 'object' && point.detail ? ` ${point.detail}` : '';
+      const linkedPeopleNames = typeof point === 'object' && point.linkedPeople && people.length > 0 
+        ? point.linkedPeople.map(personId => people.find(p => p.id === personId)).filter(Boolean).map(p => p.name).join(', ')
+        : '';
+      
+      speech += `${pointText}${pointDetail}`;
+      if (linkedPeopleNames) {
+        speech += ` This reminds me of the countless times I've witnessed this quality in ${linkedPeopleNames}.`;
+      } else {
+        speech += ` This reminds me of the countless times I've witnessed this quality firsthand.`;
+      }
+      speech += '\n\n';
     });
   }
 
   // Add personal stories with rich detail
   if (personal_stories.length > 0) {
     speech += "Let me paint you a picture with a story that captures exactly who this person is:\n\n";
-    speech += `${personal_stories[0]}\n\n`;
-    speech += "That moment perfectly shows the kind of person we're celebrating today.\n\n";
+    
+    const firstStory = personal_stories[0];
+    const storyText = typeof firstStory === 'string' ? firstStory : firstStory.text;
+    const storyDetail = typeof firstStory === 'object' && firstStory.detail ? ` ${firstStory.detail}` : '';
+    const linkedPeopleNames = typeof firstStory === 'object' && firstStory.linkedPeople && people.length > 0 
+      ? firstStory.linkedPeople.map(personId => people.find(p => p.id === personId)).filter(Boolean).map(p => p.name).join(', ')
+      : '';
+    
+    speech += `${storyText}${storyDetail}`;
+    if (linkedPeopleNames) {
+      speech += ` This moment with ${linkedPeopleNames} perfectly shows the kind of person we're celebrating today.`;
+    } else {
+      speech += " That moment perfectly shows the kind of person we're celebrating today.";
+    }
+    speech += '\n\n';
     
     if (personal_stories.length > 1) {
-      speech += `And then there's this: ${personal_stories[1]}\n\n`;
+      const secondStory = personal_stories[1];
+      const secondStoryText = typeof secondStory === 'string' ? secondStory : secondStory.text;
+      const secondStoryDetail = typeof secondStory === 'object' && secondStory.detail ? ` ${secondStory.detail}` : '';
+      
+      speech += `And then there's this: ${secondStoryText}${secondStoryDetail}\n\n`;
       speech += "These aren't just stories—they're glimpses into a character that inspires all of us.\n\n";
     }
   }
