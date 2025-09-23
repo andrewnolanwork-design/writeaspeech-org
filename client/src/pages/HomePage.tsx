@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 // Import hero image
 import professionalSpeechImage from '../assets/images/Woman Giving Professional Speech.png';
 
+// Import testimonial images
+import bestmanSpeechImage from '../assets/images/Bestman Speech.png';
+import retirementSpeechImage from '../assets/images/Retirement Speech.png';
+import officePresentationImage from '../assets/images/Office Presentation.png';
+
 const HomePage: React.FC = () => {
   return (
     <div>
@@ -92,10 +97,11 @@ const HomePage: React.FC = () => {
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <div className="testimonial-placeholder wedding">
-                  <div className="testimonial-icon">💒</div>
-                  <div className="testimonial-category">Wedding Speech</div>
-                </div>
+                <img 
+                  src={bestmanSpeechImage} 
+                  alt="Best man giving wedding speech" 
+                  className="testimonial-img"
+                />
               </div>
               <div className="testimonial-content">
                 <p>"The AI helped me write the perfect best man speech. It captured exactly what I wanted to say about my friend, and everyone loved it!"</p>
@@ -108,10 +114,11 @@ const HomePage: React.FC = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <div className="testimonial-placeholder retirement">
-                  <div className="testimonial-icon">🎉</div>
-                  <div className="testimonial-category">Retirement Speech</div>
-                </div>
+                <img 
+                  src={retirementSpeechImage} 
+                  alt="Person giving retirement speech" 
+                  className="testimonial-img"
+                />
               </div>
               <div className="testimonial-content">
                 <p>"I was dreading giving a speech at my dad's retirement party. This made it so easy - the speech was heartfelt and brought tears to everyone's eyes."</p>
@@ -124,15 +131,16 @@ const HomePage: React.FC = () => {
             
             <div className="testimonial-card">
               <div className="testimonial-image">
-                <div className="testimonial-placeholder business">
-                  <div className="testimonial-icon">💼</div>
-                  <div className="testimonial-category">Business Presentation</div>
-                </div>
+                <img 
+                  src={officePresentationImage} 
+                  alt="Professional giving business presentation" 
+                  className="testimonial-img"
+                />
               </div>
               <div className="testimonial-content">
                 <p>"As someone who hates public speaking, this gave me the confidence I needed. The speech was professional yet personal - exactly what I needed."</p>
                 <div className="testimonial-author">
-                  <strong>David Chen</strong>
+                  <strong>Amanda Xu</strong>
                   <span>Work Presentation</span>
                 </div>
               </div>
