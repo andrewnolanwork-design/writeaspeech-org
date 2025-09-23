@@ -114,7 +114,7 @@ body {
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1rem;
   align-items: center;
 }
 
@@ -464,7 +464,7 @@ body {
   .hero-content {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 1rem;
+    gap: 0.5rem;
   }
   
   .hero-title {
@@ -2500,7 +2500,8 @@ body {
 /* Professional Speech Image Styles */
 .hero-image-container {
   position: relative;
-  max-width: 750px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -2527,7 +2528,7 @@ body {
 
 .hero-main-image {
   width: 100%;
-  height: 600px;
+  height: 500px;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -3023,7 +3024,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
 }
 
 .testimonial-placeholder {
@@ -3133,11 +3134,12 @@ body {
   }
   
   .hero-image-container {
-    max-width: 600px;
+    max-width: 100%;
+    width: 100%;
   }
   
   .hero-main-image {
-    height: 450px;
+    height: 400px;
   }
   
   
